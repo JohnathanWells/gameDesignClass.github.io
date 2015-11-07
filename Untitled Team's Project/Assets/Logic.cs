@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Logic : MonoBehaviour {
 
@@ -7,8 +8,9 @@ public class Logic : MonoBehaviour {
 	public Sprite[] tiles;
 
 	public Texture2D level;
-	
-	private string[,] scene;
+
+	public bool useScene = false;
+	public string[,] scene;
 	private Vector2 spawnPoint;
 
 	public Camera mainCamera;
@@ -27,18 +29,26 @@ public class Logic : MonoBehaviour {
 	private int playerJumpNum = 0;
 	private int playerDashTimer = 0;
 
+	public Transform backgroundSlab;
+	public string[] backgroundTypes;
+	public int backgroundWidth = 25;
+	public float backgroundScrollSpeed = 4;
+	private float backgroundScrollPosition;
+	private int numBackgrounds;
+
+	public Text actionText;
+
 	private bool deletingTiles = false;
 
 	private string action = "double";
 
 	// Use this for initialization
 	void Start () {
-		Application.targetFrameRate = 10; //One problem with Flash is that 50 fps is super stable, while 60fps is pretty weird. In order to preserve the physics tick, I'm limiting the fps. Not a big deal?
 
 		//This line calculates which blocks are going to be on the screen based on the camera position. It is also in the updateCameraAndTiles section
 		camBounds = new Rect( (int) (mainCamera.transform.position.x-mainCamera.orthographicSize*2*mainCamera.aspect/2)/4-2,  (int)(mainCamera.transform.position.y - mainCamera.orthographicSize) / 4 - 2, (int) (mainCamera.orthographicSize*2*mainCamera.aspect/2)/2+5, (int) (mainCamera.orthographicSize)/2+5);
-
-		loadLevel (level);//Load the level image to a multidimensional array
+		
+		if(!useScene) loadLevel(level);//Load the level image to a multidimensional array
 
 		//These loops set the initial blocks in the camera view. Do not change the camera size during runtime - it will cause instabilities
 		for(int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
@@ -50,14 +60,21 @@ public class Logic : MonoBehaviour {
 				}
 			}
 		}
+
+		numBackgrounds = (int)(camBounds.width*4/backgroundWidth)+2;
+		for (int x = 0; x<numBackgrounds; x++) {
+			Object tmp = Instantiate (backgroundSlab, new Vector3(-1000*4, -1000*4, 5), Quaternion.identity);
+			tmp.name = "background"+x;
+			GameObject.Find(tmp.name).GetComponent<Transform>().localScale = new Vector3(backgroundWidth, camBounds.height*4+20, 1);
+		}
+
 		playerPos = new Vector2 (spawnPoint.x, spawnPoint.y);
 		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
 	}
 	void FixedUpdate () {
 		//mainCamera.transform.position += new Vector3 (0, -.05f, 0);
-		updateCameraAndTiles ();
 
-		cam.y += (playerPos.y-cam.y)/10;
+		cam.y += (playerPos.y-cam.y+2)/10;
 		cam.x += (playerPos.x+(playerLastDirIsLeft?-1:1)-cam.x)/10;
 		
 		screenshakeWOOOOAH = Mathf.Max(screenshakeWOOOOAH-1, 0);
@@ -67,14 +84,34 @@ public class Logic : MonoBehaviour {
 		smoothCam.x = smoothCam2.x+(Random.Range(0.0f, 1.0f)-.5f)*Mathf.Max(0, Mathf.Log(screenshakeWOOOOAH*100)/25);
 		smoothCam.y = smoothCam2.y+(Random.Range(0.0f, 1.0f)-.5f)*+Mathf.Max(0, Mathf.Log(screenshakeWOOOOAH*100)/25);
 
+		backgroundScrollPosition += backgroundScrollSpeed;
+		for (int x = 0; x<numBackgrounds; x++) {
+			float posX = (mainCamera.transform.position.x-Mathf.Floor(camBounds.width*4/2/backgroundWidth)*backgroundWidth-backgroundWidth/2+x*backgroundWidth-.5f*backgroundWidth-modulus(mainCamera.transform.position.x-backgroundScrollPosition/16, backgroundWidth));
+			GameObject.Find("background"+x).GetComponent<Transform>().position = new Vector3(posX, mainCamera.transform.position.y+camBounds.height*2+10, 5);
+			Color col = new Color();
+			string tmpType = backgroundAtX(posX);
+			if(tmpType == "shoot") col = new Color(224f/255f, 51f/255f, 53f/255f, 1);
+			else if(tmpType == "dash") col = new Color(0/255f, 191f/255f, 95f/255f, 1);
+			else if(tmpType == "double") col = new Color(93f/255f, 86f/255f, 210f/255f, 1);
+			GameObject.Find("background"+x).GetComponent<SpriteRenderer>().color = col;
+		}
+		action = backgroundAtX (player.transform.position.x);
+		actionText.text = action;
+
 		mainCamera.transform.position = new Vector3 (cam.x*4, cam.y*4, -10);
 
+		updateCameraAndTiles ();
+
+
 		doPlayerMovement ();
+	}
+	string backgroundAtX(float x) {
+		return backgroundTypes [(int)(modulus (x / backgroundWidth - backgroundScrollPosition / 16 / backgroundWidth, backgroundTypes.Length))];
 	}
 	
 	void Update() {
 
-		Vector2 mP = new Vector2((int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).x+2)/4, (int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).y+2)/4);
+		Vector2 mP = new Vector2((int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).x)/4, (int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).y)/4+1);
 		
 		if(Input.GetMouseButtonDown(0)) {
 			if(getTile((int) mP.x, (int) mP.y) == "1") {
@@ -98,7 +135,7 @@ public class Logic : MonoBehaviour {
 			playerJumpNum++;
 			playerVelocity.y=.5f;
 		}
-		if(action != "dash") {
+		if(action == "dash") {
 			if(Input.GetButtonDown("DashLeft")) playerDashTimer=-20;
 			if(Input.GetButtonDown ("DashRight")) playerDashTimer=20;
 		}
@@ -316,7 +353,7 @@ public class Logic : MonoBehaviour {
 		if (GameObject.Find ("tile" + x + "," + y) == null) return;
 
 		GameObject.Find("tile"+x+","+y).transform.localScale = new Vector3(4.2f, 4.2f, 1);
-		GameObject.Find ("tile"+x+","+y).GetComponent<Transform>().position = new Vector3(x*4, y*4, (modulus(x+y, 16)));
+		GameObject.Find ("tile"+x+","+y).GetComponent<Transform>().position = new Vector3(x*4, y*4, (modulus(x+y, 4)/4));
 		if (getTile (x, y) == "1") {
 			int sides = (getTile (x + 1, y) == "1" ? 1 : 0) + (getTile (x, y + 1) == "1" ? 2 : 0) + (getTile (x - 1, y) == "1" ? 4 : 0) + (getTile (x, y - 1) == "1" ? 8 : 0);
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [(sides % 4) + (int)(sides / 4) * 8];
