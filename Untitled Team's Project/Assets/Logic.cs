@@ -74,7 +74,7 @@ public class Logic : MonoBehaviour {
 	void FixedUpdate () {
 		//mainCamera.transform.position += new Vector3 (0, -.05f, 0);
 
-		cam.y += (playerPos.y-cam.y+2)/10;
+		cam.y += (playerPos.y-cam.y+4)/10;
 		cam.x += (playerPos.x+(playerLastDirIsLeft?-1:1)-cam.x)/10;
 		
 		screenshakeWOOOOAH = Mathf.Max(screenshakeWOOOOAH-1, 0);
