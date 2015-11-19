@@ -4,6 +4,14 @@ using UnityEngine.UI;
 
 public class Logic : MonoBehaviour {
 
+    public bool INSERTTHEJUICE = false;
+
+    public GameObject bulletLeft;
+    public GameObject bulletRight;
+    //float bulletSpeed;
+    float coinCount = 0;
+    bool textColor = false;
+
 	public Transform tile;
 	public Sprite[] tiles;
 
@@ -37,6 +45,7 @@ public class Logic : MonoBehaviour {
 	private int numBackgrounds;
 
 	public Text actionText;
+    public Text coinText;
 
 	private bool deletingTiles = false;
 
@@ -111,6 +120,22 @@ public class Logic : MonoBehaviour {
 	
 	void Update() {
 
+        /*if (Input.GetMouseButtonDown(0))
+            Debug.Log("Pressed left click.");*/
+
+        /*if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("Pressed right click.");
+            Debug.Log(Input.mousePosition);
+            bulletSpeed = bulletSpeed * Time.deltaTime;
+            Instantiate(bullet, player.transform.position, Quaternion.identity);
+            bullet.transform.position = Vector3.MoveTowards(player.position, Input.mousePosition, bulletSpeed);
+        }*/
+            
+
+        /*if (Input.GetMouseButtonDown(2))
+            Debug.Log("Pressed middle click.");*/
+
 		Vector2 mP = new Vector2((int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).x)/4, (int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).y)/4+1);
 		
 		if(Input.GetMouseButtonDown(0)) {
@@ -139,6 +164,15 @@ public class Logic : MonoBehaviour {
 			if(Input.GetButtonDown("DashLeft")) playerDashTimer=-20;
 			if(Input.GetButtonDown ("DashRight")) playerDashTimer=20;
 		}
+
+        if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow)))
+        {
+            Instantiate(bulletLeft, player.transform.position, Quaternion.identity);
+        }
+        if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow)))
+        {
+            Instantiate(bulletRight, player.transform.position, Quaternion.identity);
+        }
 	}
 	
 	void doPlayerMovement() {
@@ -233,28 +267,97 @@ public class Logic : MonoBehaviour {
 			}
 		}
 		playerPos.x = tmpx;
-		
-		if(spikeCollision(new Rect(playerPos.x-.2f, playerPos.y, .4f, 1.1f), .1f)) {
-			playerPos.x = spawnPoint.x;
-			playerPos.y = spawnPoint.y;
-			/*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
-			smoothCam.x = smoothCam2.x = cam.x = playerPos.x+playerVelocity.x*10;*/ //I need a rerender function for respawning lol
-			screenshakeWOOOOAH += 20;
-		}
+
+        collectableCollision(new Rect(playerPos.x - .2f, playerPos.y, .4f, 1.1f), .1f);
+        if (spikeCollision(new Rect(playerPos.x - .2f, playerPos.y, .4f, 1.1f), .1f))
+        {
+            playerPos.x = spawnPoint.x;
+            playerPos.y = spawnPoint.y;
+            /*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
+            smoothCam.x = smoothCam2.x = cam.x = playerPos.x+playerVelocity.x*10;*/
+            //I need a rerender function for respawning lol
+            screenshakeWOOOOAH += 20;
+        }
 
 		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
+
+        //coinText.color = Color.white;
 	}
-	bool collision(Rect rect, float precision) {
-		for(float x = rect.x; x<=rect.x+rect.width; x+=precision) {
-			for(float y = rect.y; y<=rect.y+rect.height; y+=precision) {
-				switch(getTile((int) x, (int) Mathf.Ceil(y))) {
-				case "1": //Whee we can add more!
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    public bool collision(Rect rect, float precision)
+    {
+        for (float x = rect.x; x <= rect.x + rect.width; x += precision)
+        {
+            for (float y = rect.y; y <= rect.y + rect.height; y += precision)
+            {
+                switch (getTile((int)x, (int)Mathf.Ceil(y)))
+                {
+                    case "1": //Whee we can add more!
+                    case "b": //Whee we can add more!
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    public bool collectableCollision(Rect rect, float precision)
+    {
+        for (float x = rect.x; x <= rect.x + rect.width; x += precision)
+        {
+            for (float y = rect.y; y <= rect.y + rect.height; y += precision)
+            {
+                switch (getTile((int)x, (int)Mathf.Ceil(y)))
+                {
+                    case "c": //Whee we can add more!
+                        setTile((int)x, (int)Mathf.Ceil(y), "");
+                        //ADD COIN STUFF
+                        coinCount++;
+                        coinText.text = "Coins =" + coinCount.ToString();
+
+                        if (INSERTTHEJUICE)
+                        {
+                            coinText.color = Color.yellow;
+                            textColor = true;
+                            Invoke("colorTextChangerRESET", .3f);
+                        }
+                        //InvokeRepeating("setCoinAnimation", .1f, .1f);
+                        //coinText.color = Color.yellow;
+                        //GUI.color = Color.yellow;
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    void setCoinAnimation(int x, int y)
+    {
+        //GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 6];
+    }
+    void colorTextChangerRESET()
+    {
+        if (textColor)
+        {
+            coinText.color = Color.white;
+        }
+
+        textColor = false;
+
+    }
+    public bool destructableCollision(Rect rect, float precision)
+    {
+        for (float x = rect.x; x <= rect.x + rect.width; x += precision)
+        {
+            for (float y = rect.y; y <= rect.y + rect.height; y += precision)
+            {
+                switch (getTile((int)x, (int)Mathf.Ceil(y)))
+                {
+                    case "b": //Whee we can add more!
+                        setTile((int)x, (int)Mathf.Ceil(y), "");
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 	bool spikeCollision(Rect rect, float precision) {
 		for(float x = rect.x; x<=rect.x+rect.width; x+=precision) {
 			for(float y = rect.y; y<=rect.y+rect.height; y+=precision) {
@@ -359,9 +462,21 @@ public class Logic : MonoBehaviour {
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [(sides % 4) + (int)(sides / 4) * 8];
 		} else if (getTile (x, y).Length == 2 && getTile (x, y).Substring (0, 1) == "s") {
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [4 + int.Parse (getTile (x, y).Substring (1, 1))];
-		} else if (getTile (x, y) == "b") {
-			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [1 * 8 + 4];
-		}
+        }
+        else if (getTile(x, y) == "b")
+        {
+            GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 4];
+        }
+        else if (getTile(x, y) == "c")
+        {
+            GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 5];
+            
+            //Invoke("setCoinAnimation", .3f);
+        }
+        /*else if (getTile(x, y) == "c1")
+        {
+            GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 6];
+        }*/
 	}
 
 	void loadLevel(Texture2D image) {
@@ -379,10 +494,13 @@ public class Logic : MonoBehaviour {
 				case 0xFF00: //Green
 					spawnPoint = new Vector2(x, y);
 					break;
-				case 0xFF0000: //Spike facing right
-					scene[x, y] = "s0";
-					break;
-				case 0xFF0001: //Spike facing up
+                case 0xFFFF00: //Coin
+                    scene[x, y] = "c";
+                    break;
+                case 0xFF0000: //Spike facing right
+                    scene[x, y] = "s0";
+                    break;
+                case 0xFF0001: //Spike facing up
 					scene[x, y] = "s1";
 					break;
 				case 0xFF0002: //Spike facing left
@@ -407,7 +525,7 @@ public class Logic : MonoBehaviour {
 		else return scene[x, y];
 	}
 
-	void setTile(int x, int y, string type) {
+	public void setTile(int x, int y, string type) {
 		if(x<=0 || x>=scene.GetLength(0) || y<=0 || y>=scene.GetLength(1)) return; //Render blocks outside of world range
 		else scene[x, y] = type;
 		if(getTile(x, y) != "") {

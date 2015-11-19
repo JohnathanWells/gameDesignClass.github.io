@@ -37,9 +37,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
---- !u!127 &3
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -68,6 +65,7 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
+    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
@@ -87,6 +85,78 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &41824410
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 41824411}
+  - 222: {fileID: 41824413}
+  - 114: {fileID: 41824412}
+  m_Layer: 5
+  m_Name: coinText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &41824411
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41824410}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 840687115}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -20}
+  m_SizeDelta: {x: 500, y: 40}
+  m_Pivot: {x: .5, y: .5}
+--- !u!114 &41824412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41824410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
+    m_FontSize: 25
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: "Coins = \n"
+--- !u!222 &41824413
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 41824410}
 --- !u!1 &423093437
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 1997211142, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowActivationOnStandalone: 0
+  m_ForceModuleActive: 0
 --- !u!114 &423093439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,7 +203,8 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
-  m_AllowActivationOnMobileDevice: 0
+  m_RepeatDelay: .5
+  m_ForceModuleActive: 0
 --- !u!114 &423093440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,10 +353,12 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+  m_TargetEye: 3
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
 --- !u!4 &635464268
 Transform:
   m_ObjectHideFlags: 0
@@ -327,6 +400,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1149882775}
+  - {fileID: 41824411}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
@@ -418,6 +492,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
     m_FontSize: 35
@@ -483,6 +563,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16cf0b2dd8ba1454c91bbc58daff6aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  INSERTTHEJUICE: 1
+  bulletLeft: {fileID: 116828, guid: ca4e8c788fefd2d4c9346c9697aba2bb, type: 2}
+  bulletRight: {fileID: 150318, guid: 5d8807c516c88a54992162de1b886bc7, type: 2}
   tile: {fileID: 484902, guid: 9b24c1febcfa3e140bb0f0ebc9eaeb46, type: 2}
   tiles:
   - {fileID: 21300000, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
@@ -549,7 +632,7 @@ MonoBehaviour:
   - {fileID: 21300122, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
   - {fileID: 21300124, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
   - {fileID: 21300126, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
-  level: {fileID: 2800000, guid: 15876abdf310c994bbbe5b75b2220eac, type: 3}
+  level: {fileID: 2800000, guid: b524a178e740dce448ee100dd0e64d03, type: 3}
   useScene: 0
   mainCamera: {fileID: 635464267}
   player: {fileID: 544416045}
@@ -561,6 +644,7 @@ MonoBehaviour:
   backgroundWidth: 25
   backgroundScrollSpeed: 4
   actionText: {fileID: 1149882773}
+  coinText: {fileID: 41824412}
 --- !u!4 &1255372338
 Transform:
   m_ObjectHideFlags: 0
