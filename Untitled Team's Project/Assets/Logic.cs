@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class Logic : MonoBehaviour {
-
     public bool INSERTTHEJUICE = false;
 
     public GameObject bulletLeft;
@@ -13,72 +12,87 @@ public class Logic : MonoBehaviour {
     bool textColor = false;
 
 	public Transform tile;
+	public Transform coinPrefab;
 	public Sprite[] tiles;
+
+	public bool renderAllTiles = false;
 
 	public Texture2D level;
 
 	public bool useScene = false;
 	public string[,] scene;
-	private Vector2 spawnPoint;
+	Vector2 spawnPoint;
 
 	public Camera mainCamera;
-	private Vector2 cam;
-	private Vector2 smoothCam;
-	private Vector2 smoothCam2;
-	private int screenshakeWOOOOAH;
-	private Rect camBounds;
+	Vector2 cam;
+	Vector2 smoothCam;
+	Vector2 smoothCam2;
+	int screenshakeWOOOOAH;
+	Rect camBounds;
 
 	public Transform player;
-	private Vector2 playerPos;
-	private Vector2 playerVelocity;
-	private bool playerLastDirIsLeft = false;
-	private bool playerFalling = true;
-	private float playerLastFallSpeed = 0;
-	private int playerJumpNum = 0;
-	private int playerDashTimer = 0;
+	Vector2 playerPos;
+	Vector2 playerVelocity;
+	bool playerLastDirIsLeft = false;
+	bool playerFalling = true;
+	float playerLastFallSpeed = 0;
+	int playerJumpNum = 0;
+	int playerDashTimer = 0;
 
 	public Transform backgroundSlab;
 	public string[] backgroundTypes;
 	public int backgroundWidth = 25;
 	public float backgroundScrollSpeed = 4;
-	private float backgroundScrollPosition;
-	private int numBackgrounds;
+	float backgroundScrollPosition;
+	int numBackgrounds;
+
+	bool alreadyDashed = true;
 
 	public Text actionText;
     public Text coinText;
 
-	private bool deletingTiles = false;
+	bool deletingTiles = false;
 
-	private string action = "double";
+	string action = "double";
 
 	// Use this for initialization
 	void Start () {
+		if(!useScene) loadLevel(level);//Load the level image to a multidimensional array
+		
+		playerPos = new Vector2 (spawnPoint.x, spawnPoint.y);
+		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
 
+		cam.y = smoothCam.y = smoothCam2.y = playerPos.y+4;
+		cam.x = smoothCam.x = smoothCam2.x = playerPos.x+(playerLastDirIsLeft?-1:1);
+		
+		mainCamera.transform.position = new Vector3 (cam.x*4, cam.y*4, -10);
 		//This line calculates which blocks are going to be on the screen based on the camera position. It is also in the updateCameraAndTiles section
 		camBounds = new Rect( (int) (mainCamera.transform.position.x-mainCamera.orthographicSize*2*mainCamera.aspect/2)/4-2,  (int)(mainCamera.transform.position.y - mainCamera.orthographicSize) / 4 - 2, (int) (mainCamera.orthographicSize*2*mainCamera.aspect/2)/2+5, (int) (mainCamera.orthographicSize)/2+5);
 		
-		if(!useScene) loadLevel(level);//Load the level image to a multidimensional array
-
-		//These loops set the initial blocks in the camera view. Do not change the camera size during runtime - it will cause instabilities
-		for(int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
-			for(int x = (int) camBounds.x; x<(int) camBounds.x+camBounds.width; x++) {
-				if(getTile(x, y) != "") {
-					Object tmp = Instantiate(tile, new Vector3(x*4, y*4, (modulus(x+y, 4))/4), Quaternion.identity);
-					tmp.name = "tile"+x+","+y;
-					updateTile(x, y);
+		if (renderAllTiles) {
+			for (int y = -1; y<level.height+1; y++) {
+				for (int x = -1; x<level.width+1; x++) {
+					if (getTile (x, y) != "") {
+						drawTile (x, y);
+					}
+				}
+			}
+		} else {
+			//These loops set the initial blocks in the camera view. Do not change the camera size during runtime - it will cause instabilities
+			for (int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
+				for (int x = (int) camBounds.x; x<(int) camBounds.x+camBounds.width; x++) {
+					if (getTile (x, y) != "") {
+						drawTile (x, y);
+					}
 				}
 			}
 		}
-
 		numBackgrounds = (int)(camBounds.width*4/backgroundWidth)+2;
 		for (int x = 0; x<numBackgrounds; x++) {
 			Object tmp = Instantiate (backgroundSlab, new Vector3(-1000*4, -1000*4, 5), Quaternion.identity);
 			tmp.name = "background"+x;
 			GameObject.Find(tmp.name).GetComponent<Transform>().localScale = new Vector3(backgroundWidth, camBounds.height*4+20, 1);
 		}
-
-		playerPos = new Vector2 (spawnPoint.x, spawnPoint.y);
-		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
 	}
 	void FixedUpdate () {
 		//mainCamera.transform.position += new Vector3 (0, -.05f, 0);
@@ -123,15 +137,13 @@ public class Logic : MonoBehaviour {
         /*if (Input.GetMouseButtonDown(0))
             Debug.Log("Pressed left click.");*/
 
-        /*if (Input.GetMouseButtonDown(1))
-        {
+        /*if (Input.GetMouseButtonDown(1)) {
             Debug.Log("Pressed right click.");
             Debug.Log(Input.mousePosition);
             bulletSpeed = bulletSpeed * Time.deltaTime;
             Instantiate(bullet, player.transform.position, Quaternion.identity);
             bullet.transform.position = Vector3.MoveTowards(player.position, Input.mousePosition, bulletSpeed);
         }*/
-            
 
         /*if (Input.GetMouseButtonDown(2))
             Debug.Log("Pressed middle click.");*/
@@ -156,21 +168,34 @@ public class Logic : MonoBehaviour {
 		}
 
 		//Some key stuff happens here, because Unity
-		if(Input.GetButtonDown ("Jump") && playerJumpNum<(action == "double"?2:1)) {
-			playerJumpNum++;
-			playerVelocity.y=.5f;
+		if (playerFalling) {
+			if (Input.GetButtonDown ("Jump") && action == "double") {
+				playerJumpNum++;
+				playerVelocity.y = .5f;
+			}
+		} else {
+			if (Input.GetButtonDown ("Jump")) {
+				playerJumpNum++;
+				playerVelocity.y = .5f;
+			}
 		}
-		if(action == "dash") {
-			if(Input.GetButtonDown("DashLeft")) playerDashTimer=-20;
-			if(Input.GetButtonDown ("DashRight")) playerDashTimer=20;
+		if (action == "dash") {
+			if(!alreadyDashed) {
+				if (Input.GetButtonDown ("DashLeft")) {
+					alreadyDashed = true;
+					playerDashTimer = -20;
+				}
+				if (Input.GetButtonDown ("DashRight")) {
+					alreadyDashed = true;
+					playerDashTimer = 20;
+				}
+			}
 		}
 
-        if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow)))
-        {
+        if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))) {
             Instantiate(bulletLeft, player.transform.position, Quaternion.identity);
         }
-        if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow)))
-        {
+        if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))) {
             Instantiate(bulletRight, player.transform.position, Quaternion.identity);
         }
 	}
@@ -222,6 +247,8 @@ public class Logic : MonoBehaviour {
 			playerJumpNum = 0;
 			if(wasFalling) screenshakeWOOOOAH += (int) Mathf.Abs(playerLastFallSpeed*10);
 			playerFalling = false;
+			
+			alreadyDashed = false;
 		}
 		float fallY;
 		for(fallY = .1f; fallY<Mathf.Abs(playerVelocity.y); fallY+=.1f) {
@@ -275,84 +302,75 @@ public class Logic : MonoBehaviour {
             playerPos.y = spawnPoint.y;
             /*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
             smoothCam.x = smoothCam2.x = cam.x = playerPos.x+playerVelocity.x*10;*/
-            //I need a rerender function for respawning lol
             screenshakeWOOOOAH += 20;
         }
-
 		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
-
+		
+		if (playerVelocity.x < -.1f) {
+			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("WalkingLeft", true);
+		} else {
+			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("WalkingLeft", false);
+		}
+		if (playerVelocity.x > .1f) {
+			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("WalkingRight", true);
+		} else {
+			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("WalkingRight", false);
+		}
+		if (playerFalling) {
+			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("Falling", true);
+		} else {
+			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("Falling", false);
+		}
         //coinText.color = Color.white;
 	}
-    public bool collision(Rect rect, float precision)
-    {
-        for (float x = rect.x; x <= rect.x + rect.width; x += precision)
-        {
-            for (float y = rect.y; y <= rect.y + rect.height; y += precision)
-            {
-                switch (getTile((int)x, (int)Mathf.Ceil(y)))
-                {
-                    case "1": //Whee we can add more!
-                    case "b": //Whee we can add more!
+    public bool collision(Rect rect, float precision) {
+        for (float x = rect.x; x <= rect.x + rect.width; x += precision) {
+            for (float y = rect.y; y <= rect.y + rect.height; y += precision) {
+                switch (getTile((int)x, (int)Mathf.Ceil(y))) {
+                    case "b":
+					case "1":
                         return true;
                 }
             }
         }
         return false;
     }
-    public bool collectableCollision(Rect rect, float precision)
-    {
-        for (float x = rect.x; x <= rect.x + rect.width; x += precision)
-        {
-            for (float y = rect.y; y <= rect.y + rect.height; y += precision)
-            {
-                switch (getTile((int)x, (int)Mathf.Ceil(y)))
-                {
+    public bool collectableCollision(Rect rect, float precision) {
+        for (float x = rect.x; x <= rect.x + rect.width; x += precision) {
+            for (float y = rect.y; y <= rect.y + rect.height; y += precision) {
+                switch (getTile((int)x, (int)Mathf.Ceil(y))) {
                     case "c": //Whee we can add more!
                         setTile((int)x, (int)Mathf.Ceil(y), "");
                         //ADD COIN STUFF
                         coinCount++;
-                        coinText.text = "Coins =" + coinCount.ToString();
+                        coinText.text = "Coins: " + coinCount.ToString();
 
-                        if (INSERTTHEJUICE)
-                        {
+                        if (INSERTTHEJUICE) {
                             coinText.color = Color.yellow;
                             textColor = true;
                             Invoke("colorTextChangerRESET", .3f);
                         }
-                        //InvokeRepeating("setCoinAnimation", .1f, .1f);
-                        //coinText.color = Color.yellow;
-                        //GUI.color = Color.yellow;
                         return true;
                 }
             }
         }
         return false;
     }
-    void setCoinAnimation(int x, int y)
-    {
-        //GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 6];
-    }
-    void colorTextChangerRESET()
-    {
-        if (textColor)
-        {
+    void colorTextChangerRESET() {
+        if (textColor) {
             coinText.color = Color.white;
         }
 
         textColor = false;
 
     }
-    public bool destructableCollision(Rect rect, float precision)
-    {
-        for (float x = rect.x; x <= rect.x + rect.width; x += precision)
-        {
-            for (float y = rect.y; y <= rect.y + rect.height; y += precision)
-            {
-                switch (getTile((int)x, (int)Mathf.Ceil(y)))
-                {
-                    case "b": //Whee we can add more!
-                        setTile((int)x, (int)Mathf.Ceil(y), "");
-                        return true;
+    public bool destructableCollision(Rect rect, float precision) {
+        for (float x = rect.x; x <= rect.x + rect.width; x += precision) {
+            for (float y = rect.y; y <= rect.y + rect.height; y += precision) {
+                switch (getTile((int)x, (int)Mathf.Ceil(y))) {
+				case "b":
+					setTile((int)x, (int)Mathf.Ceil(y), "");
+					return true;
                 }
             }
         }
@@ -380,71 +398,76 @@ public class Logic : MonoBehaviour {
 	void updateCameraAndTiles() {
 		//I reuse the camBounds width and height so the game doesn't break when you resize the camera.
 		//If completely necessary, we could check if the size changes at any time. If so, delete all tiles and reinitialize them.
-		Rect newCamBounds = new Rect( (int) (mainCamera.transform.position.x-mainCamera.orthographicSize*2*mainCamera.aspect/2)/4-2, (int)(mainCamera.transform.position.y - mainCamera.orthographicSize) / 4 - 2, camBounds.width, camBounds.height);
+		Rect newCamBounds = new Rect( (int) (mainCamera.transform.position.x-mainCamera.orthographicSize*2*mainCamera.aspect/2)/4-2, (int)(mainCamera.transform.position.y - mainCamera.orthographicSize) / 4 - 2, (int) (mainCamera.orthographicSize*2*mainCamera.aspect/2)/2+5, (int) (mainCamera.orthographicSize)/2+5);
 
 		//This code basically "rotates" the tiles on the screen, so not ALL tiles are loaded into memory at once, but only the ones in the camera view
 		//Strips of blocks outside of the camera view are deleted or moved to the strips of blocks inside of the camera view. Tiles are reused when necessary.
 		//This isn't a perfect solution, but it's so much better than having thousands of tiles always loaded.
 
 		//This section rotates the tiles on the Y axis, if necessary
-		int newBoundsY1 = 1;
-		int newBoundsY2 = 0;
-		bool down = false;
-		if (newCamBounds.y > camBounds.y) {
-			newBoundsY1 = (int) (camBounds.y+newCamBounds.height);
-			newBoundsY2 = (int) (newCamBounds.y+newCamBounds.height);
-			down = true;
-		} else if (newCamBounds.y < camBounds.y) {
-			newBoundsY1 = (int) newCamBounds.y;
-			newBoundsY2 = (int) camBounds.y;
-		}
-		for(int y = newBoundsY1; y<newBoundsY2; y++) {
-			for(int x = (int) camBounds.x; x < (int) camBounds.x+camBounds.width; x++) {
-				if(getTile(x, y) != "") { //If there's an actual tile at this position...
-					Object tmp;
-					if(getTile(x, (int) (y+(down?-1:1)*camBounds.height)) == "") {
-						tmp = Instantiate(tile, new Vector2(x*4, y*4), Quaternion.identity);
-						tmp.name = "tile"+x+","+y;
-					} else {
-						tmp = GameObject.Find("tile"+x+","+(y+(down?-1:1)*camBounds.height)).GetComponent<Transform>();
-						tmp.name = "tile"+x+","+y;
+		if(!renderAllTiles) {
+			if(camBounds.x>newCamBounds.x) {
+				for (int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
+					for (int x = (int) newCamBounds.x; x < (int) camBounds.x; x++) {
+						drawTile(x, y);
 					}
-					updateTile(x, y);
-				} else { //If no tile exists, delete the corresponding tile on the end of the screen
-					if(GameObject.Find("tile"+x+","+(y+(down?-1:1)*newCamBounds.height))!=null) Destroy(GameObject.Find("tile"+x+","+(y+(down?-1:1)*newCamBounds.height)));
+				}
+			} else if(camBounds.x<newCamBounds.x) {
+				for (int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
+					for (int x = (int) camBounds.x; x < (int) newCamBounds.x; x++) {
+						if (getTile (x, y) != "") { //If there's an actual tile at this position...
+							DestroyImmediate(GameObject.Find("tile" + x + "," + y));
+						}
+					}
 				}
 			}
-		}
-		
-		//This section rotates the tiles on the X axis, if necessary
-		//It uses the already rotated Y camera tiles in the calculation.
-		int newBoundsX1 = 1;
-		int newBoundsX2 = 0;
-		bool left = false;
-		if (newCamBounds.x > camBounds.x) {
-			newBoundsX1 = (int) (camBounds.x+newCamBounds.width);
-			newBoundsX2 = (int) (newCamBounds.x+newCamBounds.width);
-			left = true;
-		} else if (newCamBounds.x < camBounds.x) {
-			newBoundsX1 = (int) newCamBounds.x;
-			newBoundsX2 = (int) camBounds.x;
-		}
-		for(int y = (int) newCamBounds.y; y< (int) newCamBounds.y+newCamBounds.height; y++) {
-			for(int x = newBoundsX1; x < newBoundsX2; x++) {
-				if(getTile(x, y) != "") {
-					Object tmp;
-					if(getTile((int) (x+(left?-1:1)*camBounds.width), y) == "") {
-						tmp = Instantiate(tile, new Vector3(x*4, y*4, (modulus(x+y, 4))/4), Quaternion.identity);
-						tmp.name = "tile"+x+","+y;
-					} else {
-						tmp = GameObject.Find("tile"+((int) (x+(left?-1:1)*camBounds.width))+","+y).GetComponent<Transform>();
-						tmp.name = "tile"+x+","+y;
+			if(camBounds.x+camBounds.width<newCamBounds.x+newCamBounds.width) {
+				for (int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
+					for (int x = (int) (camBounds.x+camBounds.width); x < (int) (newCamBounds.x+newCamBounds.width); x++) {
+						drawTile(x, y);
 					}
-					updateTile(x, y);
-				} else {
-					if(GameObject.Find("tile"+((int) (x+(left?-1:1)*camBounds.width))+","+y)!=null) Destroy(GameObject.Find("tile"+((int) (x+(left?-1:1)*camBounds.width))+","+y));
+				}
+			} else if(camBounds.x+camBounds.width>newCamBounds.x+newCamBounds.width) {
+				for (int y = (int) camBounds.y; y<(int) camBounds.y+camBounds.height; y++) {
+					for (int x = (int) (newCamBounds.x+newCamBounds.width); x < (int) (camBounds.x+camBounds.width); x++) {
+						if (getTile (x, y) != "") { //If there's an actual tile at this position...
+							DestroyImmediate(GameObject.Find("tile" + x + "," + y));
+						}
+					}
 				}
 			}
+			
+			if(camBounds.y>newCamBounds.y) {
+				for (int x = (int) newCamBounds.x; x<(int) newCamBounds.x+newCamBounds.width; x++) {
+					for (int y = (int) newCamBounds.y; y < (int) camBounds.y; y++) {
+						drawTile(x, y);
+					}
+				}
+			} else if(camBounds.y<newCamBounds.y) {
+				for (int x = (int) newCamBounds.x; x<(int) newCamBounds.x+newCamBounds.width; x++) {
+					for (int y = (int) camBounds.y; y < (int) newCamBounds.y; y++) {
+						if (getTile (x, y) != "") { //If there's an actual tile at this position...
+							DestroyImmediate(GameObject.Find("tile" + x + "," + y));
+						}
+					}
+				}
+			}
+			if(camBounds.y+camBounds.height<newCamBounds.y+newCamBounds.height) {
+				for (int x = (int) newCamBounds.x; x<(int) newCamBounds.x+newCamBounds.width; x++) {
+					for (int y = (int) (camBounds.y+camBounds.height); y < (int) (newCamBounds.y+newCamBounds.height); y++) {
+						drawTile(x, y);
+					}
+				}
+			} else if(camBounds.y+camBounds.height>newCamBounds.y+newCamBounds.height) {
+				for (int x = (int) newCamBounds.x; x<(int) camBounds.x+camBounds.width; x++) {
+					for (int y = (int) (newCamBounds.y+newCamBounds.height); y < (int) (camBounds.y+camBounds.height); y++) {
+						if (getTile (x, y) != "") { //If there's an actual tile at this position...
+							DestroyImmediate(GameObject.Find("tile" + x + "," + y));
+						}
+					}
+				}
+			}
+			
 		}
 
 		//The camera bounds is updated so in the next loop we can check the camera movement again
@@ -462,21 +485,11 @@ public class Logic : MonoBehaviour {
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [(sides % 4) + (int)(sides / 4) * 8];
 		} else if (getTile (x, y).Length == 2 && getTile (x, y).Substring (0, 1) == "s") {
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [4 + int.Parse (getTile (x, y).Substring (1, 1))];
-        }
-        else if (getTile(x, y) == "b")
-        {
+        } else if (getTile(x, y) == "b") {
             GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 4];
-        }
-        else if (getTile(x, y) == "c")
-        {
+        } else if (getTile(x, y) == "c") {
             GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 5];
-            
-            //Invoke("setCoinAnimation", .3f);
         }
-        /*else if (getTile(x, y) == "c1")
-        {
-            GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 6];
-        }*/
 	}
 
 	void loadLevel(Texture2D image) {
@@ -524,25 +537,34 @@ public class Logic : MonoBehaviour {
 		if(x<=0 || x>=scene.GetLength(0) || y<=0 || y>=scene.GetLength(1)) return "1"; //Render blocks outside of world range
 		else return scene[x, y];
 	}
-
+	
 	public void setTile(int x, int y, string type) {
 		if(x<=0 || x>=scene.GetLength(0) || y<=0 || y>=scene.GetLength(1)) return; //Render blocks outside of world range
-		else scene[x, y] = type;
-		if(getTile(x, y) != "") {
-			Object tmp;
 
-			if(GameObject.Find("tile"+x+","+y)==null) {
-				tmp = Instantiate(tile, new Vector3(x*4, y*4, (modulus(x+y, 4))/4), Quaternion.identity);
-				tmp.name = "tile"+x+","+y;
-			}
-			updateTile(x, y);
-		} else {
-			if(GameObject.Find("tile"+x+","+y)!=null) Destroy(GameObject.Find("tile"+x+","+y));
+		if (getTile (x, y) == type)
+			return;
+
+		scene[x, y] = type;
+
+		if (x >= camBounds.x && x <= camBounds.x+camBounds.width && y >= camBounds.y && y <= camBounds.y+camBounds.height) {
+			drawTile (x, y);
 		}
+
 		updateTile (x - 1, y);
 		updateTile (x + 1, y);
 		updateTile (x, y - 1);
 		updateTile (x, y + 1);
+	}
+	public void drawTile(int x, int y) {
+		DestroyImmediate(GameObject.Find("tile"+x+","+y));
+
+		if(getTile(x, y) != "") {
+			Object tmp;
+			if(getTile(x, y) == "c") tmp = Instantiate(coinPrefab, new Vector3(x*4, y*4, (modulus(x+y, 4))/4), Quaternion.identity);
+			else tmp = Instantiate(tile, new Vector3(x*4, y*4, (modulus(x+y, 4))/4), Quaternion.identity);
+			tmp.name = "tile"+x+","+y;
+			updateTile(x, y);
+		}
 	}
 	float modulus(float a, float b) {
 		float c = a % b;
