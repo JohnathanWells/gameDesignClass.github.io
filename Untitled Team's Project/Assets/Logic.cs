@@ -5,6 +5,8 @@ using UnityEngine.UI;
 public class Logic : MonoBehaviour {
     public bool INSERTTHEJUICE = false;
 
+	public AudioClip[] sounds;
+
     public GameObject bulletLeft;
     public GameObject bulletRight;
     //float bulletSpeed;
@@ -170,11 +172,13 @@ public class Logic : MonoBehaviour {
 		//Some key stuff happens here, because Unity
 		if (playerFalling) {
 			if (Input.GetButtonDown ("Jump") && action == "double") {
+				playSound (0);
 				playerJumpNum++;
 				playerVelocity.y = .5f;
 			}
 		} else {
 			if (Input.GetButtonDown ("Jump")) {
+				playSound (5);
 				playerJumpNum++;
 				playerVelocity.y = .5f;
 			}
@@ -182,22 +186,30 @@ public class Logic : MonoBehaviour {
 		if (action == "dash") {
 			if(!alreadyDashed) {
 				if (Input.GetButtonDown ("DashLeft")) {
+					playSound (6);
 					alreadyDashed = true;
 					playerDashTimer = -20;
 				}
 				if (Input.GetButtonDown ("DashRight")) {
+					playSound (6);
 					alreadyDashed = true;
 					playerDashTimer = 20;
 				}
 			}
 		}
 
-        if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))) {
+		if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))) {
+			playSound (3);
             Instantiate(bulletLeft, player.transform.position, Quaternion.identity);
         }
-        if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))) {
+		if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))) {
+			playSound (3);
             Instantiate(bulletRight, player.transform.position, Quaternion.identity);
         }
+	}
+	void playSound(int num) {
+		gameObject.GetComponent<AudioSource>().clip = sounds[num];
+		gameObject.GetComponent<AudioSource>().Play();
 	}
 	
 	void doPlayerMovement() {
@@ -302,7 +314,8 @@ public class Logic : MonoBehaviour {
             playerPos.y = spawnPoint.y;
             /*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
             smoothCam.x = smoothCam2.x = cam.x = playerPos.x+playerVelocity.x*10;*/
-            screenshakeWOOOOAH += 20;
+			screenshakeWOOOOAH += 20;
+			playSound (1);
         }
 		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
 		
@@ -343,7 +356,8 @@ public class Logic : MonoBehaviour {
                         setTile((int)x, (int)Mathf.Ceil(y), "");
                         //ADD COIN STUFF
                         coinCount++;
-                        coinText.text = "Coins: " + coinCount.ToString();
+						coinText.text = "Coins: " + coinCount.ToString();
+						playSound (2);
 
                         if (INSERTTHEJUICE) {
                             coinText.color = Color.yellow;
