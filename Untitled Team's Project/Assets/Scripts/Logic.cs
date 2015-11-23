@@ -7,6 +7,7 @@ public class Logic : MonoBehaviour {
 
     public GameObject bulletLeft;
     public GameObject bulletRight;
+    public PlaytestingScript stats;
     //float bulletSpeed;
     float coinCount = 0;
     bool textColor = false;
@@ -298,6 +299,7 @@ public class Logic : MonoBehaviour {
         collectableCollision(new Rect(playerPos.x - .2f, playerPos.y, .4f, 1.1f), .1f);
         if (spikeCollision(new Rect(playerPos.x - .2f, playerPos.y, .4f, 1.1f), .1f))
         {
+            stats.SendMessage("registerDeath", playerPos);
             playerPos.x = spawnPoint.x;
             playerPos.y = spawnPoint.y;
             /*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
