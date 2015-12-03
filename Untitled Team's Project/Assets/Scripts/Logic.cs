@@ -16,6 +16,13 @@ public class Logic : MonoBehaviour {
     float coinCount = 0;
     bool textColor = false;
 
+    public ParticleSystem dashParticles;
+    public ParticleSystem doubleJumpParticles;
+    public ParticleSystem shootParticles;
+    public ParticleSystem blockDestructionParticles;
+    public ParticleSystem deathParticles;
+    public ParticleSystem winCelebrationParticles;
+
 	public Transform tile;
 	public Transform coinPrefab;
 	public Sprite[] tiles;
@@ -180,6 +187,7 @@ public class Logic : MonoBehaviour {
 				playSound (0);
 				playerJumpNum++;
 				playerVelocity.y = .5f;
+                EmitParticles(doubleJumpParticles, new Vector2(player.position.x + 2f, player.position.y - 0.2f), new Vector3(77, 0, 0), null);
 			}
 		} else {
 			if (Input.GetButtonDown ("Jump") && playerJumpNum < 1) {
@@ -194,11 +202,13 @@ public class Logic : MonoBehaviour {
 					playSound (6);
 					alreadyDashed = true;
 					playerDashTimer = -20;
+                    EmitParticles(dashParticles, new Vector2(player.position.x + 5, player.position.y - 1), new Vector3(0, 90, 0), player.transform);
 				}
 				if (Input.GetButtonDown ("DashRight")) {
 					playSound (6);
 					alreadyDashed = true;
 					playerDashTimer = 20;
+                    EmitParticles(dashParticles, new Vector2(player.position.x - 0.5f, player.position.y - 1), new Vector3(0, -90, 0), player.transform);
 				}
 			}
 		}
@@ -206,10 +216,12 @@ public class Logic : MonoBehaviour {
 		if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))) {
 			playSound (3);
             Instantiate(bulletLeft, player.transform.position, Quaternion.identity);
+            EmitParticles(shootParticles, new Vector2(player.position.x + 0.5f, player.position.y - 2), new Vector2(0, -90), player.transform);
         }
 		if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))) {
 			playSound (3);
             Instantiate(bulletRight, player.transform.position, Quaternion.identity);
+            EmitParticles(shootParticles, new Vector2(player.position.x + 4, player.position.y - 2), new Vector2(0, 90), player.transform);
         }
 	}
 	void playSound(int num) {
@@ -317,6 +329,7 @@ public class Logic : MonoBehaviour {
         if (spikeCollision(new Rect(playerPos.x - .2f, playerPos.y-.1f, .4f, 1.2f), .1f))
         {
             stats.SendMessage("registerDeath", playerPos);
+            EmitParticles(deathParticles, player.position, Vector3.zero, null);
             playerPos.x = spawnPoint.x;
             playerPos.y = spawnPoint.y;
             /*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
@@ -374,7 +387,8 @@ public class Logic : MonoBehaviour {
 					break;
 				case "e": //Whee we can add more!
 					stats.SendMessage("registerWin", playerPos);
-					Application.LoadLevel ("level"+(levelNum+1));
+                    EmitParticles(winCelebrationParticles, player.position, Vector3.zero, null);
+                    StartCoroutine(loadNextLevel());
 					break;
 				}
 			}
@@ -598,4 +612,24 @@ public class Logic : MonoBehaviour {
 		float c = a % b;
 		return (c < 0) ? c + b : c;
 	}
+
+    void EmitParticles(ParticleSystem pS, Vector3 position, Vector3 angle, Transform particleParent)
+    {
+        ParticleSystem particle = Instantiate(pS, position, Quaternion.identity) as ParticleSystem;
+        StartCoroutine(particleDeath(particle));
+        particle.transform.parent = particleParent;
+        particle.transform.rotation = Quaternion.Euler(angle);
+    }
+
+    IEnumerator particleDeath(ParticleSystem PS)
+    {
+        yield return new WaitForSeconds(PS.startLifetime);
+        Destroy(PS.gameObject);
+    }
+    
+    IEnumerator loadNextLevel()
+    {
+        yield return new WaitForSeconds(2f);
+        Application.LoadLevel("level" + (levelNum + 1));
+    }
 }
