@@ -16,12 +16,16 @@ public class Logic : MonoBehaviour {
     float coinCount = 0;
     bool textColor = false;
 
+	public bool died = false;
+	private bool won = false;
+
     public ParticleSystem dashParticles;
     public ParticleSystem doubleJumpParticles;
     public ParticleSystem shootParticles;
     public ParticleSystem blockDestructionParticles;
-    public ParticleSystem deathParticles;
-    public ParticleSystem winCelebrationParticles;
+	public ParticleSystem deathParticles;
+	public ParticleSystem winCelebrationParticles;
+	public ParticleSystem coinParticles;
 
 	public Transform tile;
 	public Transform coinPrefab;
@@ -60,6 +64,9 @@ public class Logic : MonoBehaviour {
 
 	bool alreadyDashed = true;
 
+	public string[] signs;
+	public Transform signTextBox;
+
 	public Text actionText;
     public Text coinText;
 
@@ -73,12 +80,12 @@ public class Logic : MonoBehaviour {
 		if(!useScene) loadLevel(level);//Load the level image to a multidimensional array
 		
 		playerPos = new Vector2 (spawnPoint.x, spawnPoint.y);
-		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
+		updateSpritePosition ();
 
 		cam.y = smoothCam.y = smoothCam2.y = playerPos.y+4;
 		cam.x = smoothCam.x = smoothCam2.x = playerPos.x+(playerLastDirIsLeft?-1:1);
 		
-		mainCamera.transform.position = new Vector3 (cam.x*4, cam.y*4, -10);
+		mainCamera.transform.position = new Vector3 (cam.x*4, cam.y*4, -50);
 		//This line calculates which blocks are going to be on the screen based on the camera position. It is also in the updateCameraAndTiles section
 		camBounds = new Rect( (int) (mainCamera.transform.position.x-mainCamera.orthographicSize*2*mainCamera.aspect/2)/4-2,  (int)(mainCamera.transform.position.y - mainCamera.orthographicSize) / 4 - 2, (int) (mainCamera.orthographicSize*2*mainCamera.aspect/2)/2+5, (int) (mainCamera.orthographicSize)/2+5);
 		
@@ -108,8 +115,6 @@ public class Logic : MonoBehaviour {
 		}
 	}
 	void FixedUpdate () {
-		//mainCamera.transform.position += new Vector3 (0, -.05f, 0);
-
 		cam.y += (playerPos.y-cam.y+4)/10;
 		cam.x += (playerPos.x+(playerLastDirIsLeft?-1:1)-cam.x)/10;
 		
@@ -118,7 +123,7 @@ public class Logic : MonoBehaviour {
 		smoothCam2.y += ((cam.y+camBounds.height/6)-smoothCam.y)/10;
 		
 		smoothCam.x = smoothCam2.x+(Random.Range(0.0f, 1.0f)-.5f)*Mathf.Max(0, Mathf.Log(screenshakeWOOOOAH*100)/25);
-		smoothCam.y = smoothCam2.y+(Random.Range(0.0f, 1.0f)-.5f)*+Mathf.Max(0, Mathf.Log(screenshakeWOOOOAH*100)/25);
+		smoothCam.y = smoothCam2.y+(Random.Range(0.0f, 1.0f)-.5f)*Mathf.Max(0, Mathf.Log(screenshakeWOOOOAH*100)/25);
 
 		backgroundScrollPosition += backgroundScrollSpeed;
 		for (int x = 0; x<numBackgrounds; x++) {
@@ -134,33 +139,21 @@ public class Logic : MonoBehaviour {
 		action = backgroundAtX (player.transform.position.x);
 		actionText.text = action;
 
-		mainCamera.transform.position = new Vector3 (cam.x*4, cam.y*4, -10);
+		mainCamera.transform.position = new Vector3 (cam.x*4, cam.y*4, -50);
 
 		updateCameraAndTiles ();
 
 
-		doPlayerMovement ();
+		if(!died && !won) doPlayerMovement ();
+	}
+	void updateSpritePosition() {
+		player.transform.position = new Vector3 (playerPos.x * 4 - 2, playerPos.y * 4 + 4, -1);
 	}
 	string backgroundAtX(float x) {
-		return backgroundTypes [(int)(modulus (x / backgroundWidth - backgroundScrollPosition / 16 / backgroundWidth, backgroundTypes.Length))];
+		return backgroundTypes [(int)(modulus ((x+1.5f) / backgroundWidth - backgroundScrollPosition / 16 / backgroundWidth, backgroundTypes.Length))];
 	}
 	
 	void Update() {
-
-        /*if (Input.GetMouseButtonDown(0))
-            Debug.Log("Pressed left click.");*/
-
-        /*if (Input.GetMouseButtonDown(1)) {
-            Debug.Log("Pressed right click.");
-            Debug.Log(Input.mousePosition);
-            bulletSpeed = bulletSpeed * Time.deltaTime;
-            Instantiate(bullet, player.transform.position, Quaternion.identity);
-            bullet.transform.position = Vector3.MoveTowards(player.position, Input.mousePosition, bulletSpeed);
-        }*/
-
-        /*if (Input.GetMouseButtonDown(2))
-            Debug.Log("Pressed middle click.");*/
-
 		Vector2 mP = new Vector2((int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).x)/4, (int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).y)/4+1);
 
 		/*
@@ -182,12 +175,14 @@ public class Logic : MonoBehaviour {
 		}*/
 
 		//Some key stuff happens here, because Unity
+
+		//Where jump and double jump is handled
 		if (playerFalling) {
 			if (Input.GetButtonDown ("Jump") && action == "double" && playerJumpNum <= 1) {
 				playSound (0);
 				playerJumpNum++;
 				playerVelocity.y = .5f;
-                EmitParticles(doubleJumpParticles, new Vector2(player.position.x + 2f, player.position.y - 0.2f), new Vector3(77, 0, 0), null);
+                EmitParticles(doubleJumpParticles, new Vector2(player.position.x + 2f, player.position.y - 0.2f), new Vector3(-13, 0, 0), null);
 			}
 		} else {
 			if (Input.GetButtonDown ("Jump") && playerJumpNum < 1) {
@@ -196,32 +191,35 @@ public class Logic : MonoBehaviour {
 				playerVelocity.y = .5f;
 			}
 		}
+
+		//Where dashing is handled
 		if (action == "dash") {
 			if(!alreadyDashed) {
 				if (Input.GetButtonDown ("DashLeft")) {
 					playSound (6);
 					alreadyDashed = true;
 					playerDashTimer = -20;
-                    EmitParticles(dashParticles, new Vector2(player.position.x + 5, player.position.y - 1), new Vector3(0, 90, 0), player.transform);
+					EmitParticles(dashParticles, new Vector3(player.position.x + 4f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, 90, 0), player.transform);
 				}
 				if (Input.GetButtonDown ("DashRight")) {
 					playSound (6);
 					alreadyDashed = true;
 					playerDashTimer = 20;
-                    EmitParticles(dashParticles, new Vector2(player.position.x - 0.5f, player.position.y - 1), new Vector3(0, -90, 0), player.transform);
+					EmitParticles(dashParticles, new Vector3(player.position.x + .5f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, -90, 0), player.transform);
 				}
 			}
 		}
-
+		
+		//Where shooting is handled
 		if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))) {
 			playSound (3);
-            Instantiate(bulletLeft, player.transform.position, Quaternion.identity);
-            EmitParticles(shootParticles, new Vector2(player.position.x + 0.5f, player.position.y - 2), new Vector2(0, -90), player.transform);
+			Instantiate(bulletLeft, new Vector2(player.position.x, player.position.y - .5f), Quaternion.identity);
+			EmitParticles(shootParticles, new Vector3(player.position.x + 0.5f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, -90, 0), player.transform);
         }
 		if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))) {
 			playSound (3);
-            Instantiate(bulletRight, player.transform.position, Quaternion.identity);
-            EmitParticles(shootParticles, new Vector2(player.position.x + 4, player.position.y - 2), new Vector2(0, 90), player.transform);
+			Instantiate(bulletRight, new Vector2(player.position.x + 4, player.position.y - .5f), new Quaternion(0, 180, 0, 0));
+			EmitParticles(shootParticles, new Vector3(player.position.x + 4f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, 90, 0), player.transform);
         }
 	}
 	void playSound(int num) {
@@ -326,18 +324,16 @@ public class Logic : MonoBehaviour {
 		playerPos.x = tmpx;
 
         collectableCollision(new Rect(playerPos.x - .2f, playerPos.y, .4f, 1.1f), .1f);
-        if (spikeCollision(new Rect(playerPos.x - .2f, playerPos.y-.1f, .4f, 1.2f), .1f))
-        {
-            stats.SendMessage("registerDeath", playerPos);
-            EmitParticles(deathParticles, player.position, Vector3.zero, null);
-            playerPos.x = spawnPoint.x;
-            playerPos.y = spawnPoint.y;
-            /*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
-            smoothCam.x = smoothCam2.x = cam.x = playerPos.x+playerVelocity.x*10;*/
+        if (spikeCollision(new Rect(playerPos.x - .2f, playerPos.y-.1f, .4f, 1.2f), .1f)) {
+			EmitParticles(deathParticles, new Vector3(player.position.x+.5f, player.position.y-5f, player.position.z), Vector3.zero, null);
+			died = true;
+			player.Find ("PlayerSprite").GetComponent<SpriteRenderer>().enabled = false;
+			stats.SendMessage("registerDeath", playerPos);
 			screenshakeWOOOOAH += 20;
 			playSound (1);
+			Invoke ("resetAfterDeath", 2f);
         }
-		player.transform.position = new Vector3 (playerPos.x*4-2, playerPos.y*4+4, -1);
+		updateSpritePosition ();
 		
 		if (playerVelocity.x < -.1f) {
 			GameObject.Find ("PlayerSprite").GetComponent<Animator>().SetBool("WalkingLeft", true);
@@ -368,16 +364,27 @@ public class Logic : MonoBehaviour {
         }
         return false;
 	}
+	public void resetAfterDeath() {
+		playerPos.x = spawnPoint.x;
+		playerPos.y = spawnPoint.y;
+		/*smoothCam.y = smoothCam2.y = cam.y = playerPos.y;
+            smoothCam.x = smoothCam2.x = cam.x = playerPos.x+playerVelocity.x*10;*/
+		died = false;
+		player.Find ("PlayerSprite").GetComponent<SpriteRenderer>().enabled = true;
+		updateSpritePosition ();
+	}
 	public bool collectableCollision(Rect rect, float precision) {
 		for (float x = rect.x; x <= rect.x + rect.width; x += precision) {
 			for (float y = rect.y; y <= rect.y + rect.height; y += precision) {
-				switch (getTile((int)x, (int)Mathf.Ceil(y))) {
+				string tile = getTile((int)x, (int)Mathf.Ceil(y));
+				switch (tile) {
 				case "c": //Whee we can add more!
 					setTile((int)x, (int)Mathf.Ceil(y), "");
 					//ADD COIN STUFF
 					coinCount++;
 					coinText.text = "Coins: " + coinCount.ToString();
 					playSound (2);
+					EmitParticles(coinParticles, new Vector3(x*4+2, y*4+2, -10), new Vector3(90, 0, 0), null);
 					
 					if (INSERTTHEJUICE) {
 						coinText.color = Color.yellow;
@@ -385,10 +392,23 @@ public class Logic : MonoBehaviour {
 						Invoke("colorTextChangerRESET", .3f);
 					}
 					break;
-				case "e": //Whee we can add more!
+				case "e":
 					stats.SendMessage("registerWin", playerPos);
-                    EmitParticles(winCelebrationParticles, player.position, Vector3.zero, null);
-                    StartCoroutine(loadNextLevel());
+					EmitParticles(winCelebrationParticles, player.position, Vector3.zero, null);
+					won = true;
+					Invoke("loadNextLevel", 2);
+					break;
+				case "r":
+					for(int y22 = (int) spawnPoint.y+1; getTile ((int) spawnPoint.x, y22)=="R"; y22++) setTile ((int) spawnPoint.x, y22, "r");
+					int y2;
+					for(y2 = (int) y; getTile ((int) x, y2)=="r"; y2--) continue;
+					for(int y22 = (int) y2+1; getTile ((int) x, y22)=="r"; y22++) setTile ((int) x, y22, "R");
+					spawnPoint = new Vector2(x, y2);
+					break;
+				default: //Whee we can add more!
+					if(tile.Length>1 && tile.Substring (0, 1) == "g") {
+						signTextBox.GetComponent<textFade>().fadeIn (signs[int.Parse(tile.Substring (1))]);
+					}
 					break;
 				}
 			}
@@ -403,17 +423,19 @@ public class Logic : MonoBehaviour {
         textColor = false;
 
     }
-    public bool destructableCollision(Rect rect, float precision) {
+	public bool destructableCollision(Rect rect, float precision) {
+		bool found = false;
         for (float x = rect.x; x <= rect.x + rect.width; x += precision) {
             for (float y = rect.y; y <= rect.y + rect.height; y += precision) {
                 switch (getTile((int)x, (int)Mathf.Ceil(y))) {
 				case "b":
 					setTile((int)x, (int)Mathf.Ceil(y), "");
-					return true;
+					found = true;
+					break;
                 }
             }
         }
-        return false;
+		return found;
     }
 	bool spikeCollision(Rect rect, float precision) {
 		for(float x = rect.x; x<=rect.x+rect.width; x+=precision) {
@@ -429,6 +451,8 @@ public class Logic : MonoBehaviour {
 					} else if(int.Parse(tile.Substring(1, 1)) == 3) {
 						if(modulus(y, 1)!=0 && modulus(y, 1)>.8f && Mathf.Abs(modulus(x, 1)-.5f)<.4f) return true;
 					}
+				} else if(tile == "a") {
+					if(modulus(y, 1)>.2f && modulus(y, 1)<.8f && modulus(y, 1)>.2f && modulus(y, 1)<.8f) return true;
 				}
 			}
 		}
@@ -518,16 +542,41 @@ public class Logic : MonoBehaviour {
 		if (GameObject.Find ("tile" + x + "," + y) == null) return;
 
 		GameObject.Find("tile"+x+","+y).transform.localScale = new Vector3(4.2f, 4.2f, 1);
-		GameObject.Find ("tile"+x+","+y).GetComponent<Transform>().position = new Vector3(x*4, y*4, (modulus(x+y, 4)/4));
+		GameObject.Find("tile"+x+","+y).GetComponent<Transform>().position = new Vector3(x*4, y*4, (modulus(x+y, 4)/4));
 		if (getTile (x, y) == "1") {
-			int sides = (getTile (x + 1, y) == "1" ? 1 : 0) + (getTile (x, y + 1) == "1" ? 2 : 0) + (getTile (x - 1, y) == "1" ? 4 : 0) + (getTile (x, y - 1) == "1" ? 8 : 0);
+			int sides = (getTile (x + 1, y) == "1" || getTile (x + 1, y) == "a" ? 1 : 0) + (getTile (x, y + 1) == "1" || getTile (x, y + 1) == "a" ? 2 : 0) + (getTile (x - 1, y) == "1" || getTile (x - 1, y) == "a" ? 4 : 0) + (getTile (x, y - 1) == "1" || getTile (x, y - 1) == "a" ? 8 : 0);
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [(sides % 4) + (int)(sides / 4) * 8];
 		} else if (getTile (x, y).Length == 2 && getTile (x, y).Substring (0, 1) == "s") {
 			GameObject.Find ("tile"+x+","+y).GetComponent<SpriteRenderer> ().sprite = tiles [4 + int.Parse (getTile (x, y).Substring (1, 1))];
-        } else if (getTile(x, y) == "b") {
+        } else if (getTile(x, y) == "b") { //Barrier
             GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 4];
-		} else if (getTile(x, y) == "e") {
+		} else if (getTile(x, y) == "e") { //End
 			GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 5];
+		} else if (getTile(x, y).Substring (0, 1) == "g") { //Sign
+			GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[3 * 8 + 7];
+		} else if (getTile(x, y) == "r") { //Respawn
+			if(getTile (x, y - 1) == "1") {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 6];
+			} else if(getTile (x, y + 1) == "1") {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[1 * 8 + 7];
+			} else {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[2 * 8 + 7];
+			}
+		} else if (getTile(x, y) == "R") { //Respawn selected :)
+			if(getTile (x, y - 1) == "1") {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[4 * 8 + 6];
+			} else if(getTile (x, y + 1) == "1") {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[4 * 8 + 7];
+			} else {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[5 * 8 + 7];
+			}
+		} else if (getTile(x, y) == "a") { //Lava
+			if(getTile (x, y + 1) != "a" && getTile (x, y + 1) != "1") {
+				if(x%2 == 0) GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[3 * 8 + 4];
+				else GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[3 * 8 + 5];
+			} else {
+				GameObject.Find("tile" + x + "," + y).GetComponent<SpriteRenderer>().sprite = tiles[3 * 8 + 6];
+			}
 		}
 	}
 
@@ -539,15 +588,16 @@ public class Logic : MonoBehaviour {
 		for(int x = 0; x<image.width; x++) {
 			for(int y = 0; y<lvlHeight; y++) {
 				scene[x, y] = ""; //Default to air
-				switch((int)(image.GetPixel(x, y).r*255*256*256+image.GetPixel(x, y).g*255*256+image.GetPixel(x, y).b*255)) { //Read the pixel of the level
+				int pix = (int)(image.GetPixel(x, y).r*255*256*256+image.GetPixel(x, y).g*255*256+image.GetPixel(x, y).b*255);
+				switch(pix) { //Read the pixel of the level
 				case (0x0): //Black
 					scene[x, y] = "1"; //Wall type 1
 					break;
-				case 0xFF00: //Green
-					spawnPoint = new Vector2(x, y);
+				case 0xFF00:
+					spawnPoint = new Vector2(x+.5f, y); //Spawn point
 					break;
-                case 0xFFFF00: //Coin
-                    scene[x, y] = "c";
+                case 0xFFFF00:
+					scene[x, y] = "c"; //Coin
                     break;
                 case 0xFF0000: //Spike facing right
                     scene[x, y] = "s0";
@@ -561,14 +611,22 @@ public class Logic : MonoBehaviour {
 				case 0xFF0003: //Spike facing down
 					scene[x, y] = "s3";
 					break;
-				case 0x777777: //Barrier
-					scene[x, y] = "b";
+				case 0x777777:
+					scene[x, y] = "b"; //Barrier
 					break;
-				case 0x0000FF: //Barrier
-					scene[x, y] = "e";
+				case 0x0000FF:
+					scene[x, y] = "e"; //End
 					break;
-				case 0xFF7700: //Orange
-					//Add enemy
+				case 0xFF00FF:
+					scene[x, y] = "r"; //Respawn
+					break;
+				case 0xFF7777:
+					scene[x, y] = "a"; //Lava I guess
+					break;
+				default: //Other things
+					if(pix>>8 == 0xFF77) {
+						scene[x, y] = "g"+(pix-Mathf.Floor((pix>>8)*0x100)); //Sign
+					}
 					break;
 				}
 			}
@@ -591,7 +649,6 @@ public class Logic : MonoBehaviour {
 		if (x >= camBounds.x && x <= camBounds.x+camBounds.width && y >= camBounds.y && y <= camBounds.y+camBounds.height) {
 			drawTile (x, y);
 		}
-
 		updateTile (x - 1, y);
 		updateTile (x + 1, y);
 		updateTile (x, y - 1);
@@ -612,24 +669,14 @@ public class Logic : MonoBehaviour {
 		float c = a % b;
 		return (c < 0) ? c + b : c;
 	}
-
-    void EmitParticles(ParticleSystem pS, Vector3 position, Vector3 angle, Transform particleParent)
-    {
-        ParticleSystem particle = Instantiate(pS, position, Quaternion.identity) as ParticleSystem;
-        StartCoroutine(particleDeath(particle));
-        particle.transform.parent = particleParent;
-        particle.transform.rotation = Quaternion.Euler(angle);
-    }
-
-    IEnumerator particleDeath(ParticleSystem PS)
-    {
-        yield return new WaitForSeconds(PS.startLifetime);
-        Destroy(PS.gameObject);
+    void EmitParticles(ParticleSystem pS, Vector3 position, Vector3 angle, Transform particleParent) {
+		ParticleSystem particle = Instantiate(pS, new Vector3(position.x, position.y, position.z-10), Quaternion.identity) as ParticleSystem;
+		if(particleParent != null) particle.transform.parent = particleParent;
+		particle.transform.rotation = Quaternion.Euler(new Vector3(angle.x-90, angle.y, angle.z));
+		Destroy(particle.gameObject, particle.startLifetime);
     }
     
-    IEnumerator loadNextLevel()
-    {
-        yield return new WaitForSeconds(2f);
+    void loadNextLevel() {
         Application.LoadLevel("level" + (levelNum + 1));
     }
 }

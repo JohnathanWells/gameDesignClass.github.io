@@ -199,7 +199,6 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
-  m_RepeatDelay: .5
   m_AllowActivationOnMobileDevice: 0
 --- !u!114 &423093440
 MonoBehaviour:
@@ -327,7 +326,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
-  m_StereoMirrorMode: 0
 --- !u!4 &635464268
 Transform:
   m_ObjectHideFlags: 0
@@ -584,6 +582,16 @@ MonoBehaviour:
   bulletLeft: {fileID: 116828, guid: ca4e8c788fefd2d4c9346c9697aba2bb, type: 2}
   bulletRight: {fileID: 150318, guid: 5d8807c516c88a54992162de1b886bc7, type: 2}
   stats: {fileID: 1045211135}
+  died: 0
+  dashParticles: {fileID: 19838584, guid: e41bd9e4631c9de45818e59948c2dfbe, type: 2}
+  doubleJumpParticles: {fileID: 19851534, guid: 7b05a4a5daf534343a1f94fb4de995ec,
+    type: 2}
+  shootParticles: {fileID: 19883812, guid: 46a7adaae360f90489ba13c6e7ec33ca, type: 2}
+  blockDestructionParticles: {fileID: 19865374, guid: b99d29c8cdaae9849819496a00ee48f0,
+    type: 2}
+  deathParticles: {fileID: 19834262, guid: dc058172a5373ad4e917b7a093865e9f, type: 2}
+  winCelebrationParticles: {fileID: 19851090, guid: e771d9b257797e44aa00d069ab478965,
+    type: 2}
   tile: {fileID: 484902, guid: 9b24c1febcfa3e140bb0f0ebc9eaeb46, type: 2}
   coinPrefab: {fileID: 420194, guid: 474a0699d603cf54f988dbb4c96eca63, type: 2}
   tiles:
