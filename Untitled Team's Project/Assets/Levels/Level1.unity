@@ -37,6 +37,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+<<<<<<< HEAD
+=======
+--- !u!127 &3
+LevelGameManager:
+  m_ObjectHideFlags: 0
+>>>>>>> origin/master
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -65,7 +71,10 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
+<<<<<<< HEAD
     m_ReflectionCompression: 2
+=======
+>>>>>>> origin/master
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
@@ -132,6 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+<<<<<<< HEAD
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -141,6 +151,11 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
     m_FontSize: 15
+=======
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
+    m_FontSize: 25
+>>>>>>> origin/master
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -186,7 +201,11 @@ MonoBehaviour:
   m_Script: {fileID: 1997211142, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   m_ForceModuleActive: 0
+=======
+  m_AllowActivationOnStandalone: 0
+>>>>>>> origin/master
 --- !u!114 &423093439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,8 +222,12 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
+<<<<<<< HEAD
   m_RepeatDelay: .5
   m_ForceModuleActive: 0
+=======
+  m_AllowActivationOnMobileDevice: 0
+>>>>>>> origin/master
 --- !u!114 &423093440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,12 +350,18 @@ Camera:
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
+<<<<<<< HEAD
   m_TargetEye: 3
+=======
+>>>>>>> origin/master
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: .0219999999
+<<<<<<< HEAD
   m_StereoMirrorMode: 0
+=======
+>>>>>>> origin/master
 --- !u!4 &635464268
 Transform:
   m_ObjectHideFlags: 0
@@ -340,7 +369,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 635464263}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+<<<<<<< HEAD
   m_LocalPosition: {x: 55.7000008, y: 20.7000008, z: -10}
+=======
+  m_LocalPosition: {x: 55.7000008, y: 20.7000008, z: -100}
+>>>>>>> origin/master
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -377,6 +410,10 @@ RectTransform:
   - {fileID: 41824411}
   - {fileID: 1987701304}
   - {fileID: 1045211134}
+<<<<<<< HEAD
+=======
+  - {fileID: 1413925997}
+>>>>>>> origin/master
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
@@ -509,12 +546,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+<<<<<<< HEAD
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+=======
+>>>>>>> origin/master
   m_FontData:
     m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
     m_FontSize: 35
@@ -550,7 +590,11 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: 0}
   m_AnchorMax: {x: .5, y: 0}
+<<<<<<< HEAD
   m_AnchoredPosition: {x: 8, y: 67.4000015}
+=======
+  m_AnchoredPosition: {x: 8, y: 67.4000244}
+>>>>>>> origin/master
   m_SizeDelta: {x: 500, y: 40}
   m_Pivot: {x: .5, y: .5}
 --- !u!1 &1255372336
@@ -564,7 +608,10 @@ GameObject:
   - 114: {fileID: 1255372337}
   - 82: {fileID: 1255372339}
   - 82: {fileID: 1255372340}
+<<<<<<< HEAD
   - 95: {fileID: 1255372341}
+=======
+>>>>>>> origin/master
   m_Layer: 0
   m_Name: Logic
   m_TagString: Untagged
@@ -584,7 +631,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   INSERTTHEJUICE: 1
+<<<<<<< HEAD
   particleJuice: {fileID: 164948, guid: c17963bbb4ed8bb43ab629df2aa6f6fb, type: 2}
+=======
+>>>>>>> origin/master
   levelNum: 1
   sounds:
   - {fileID: 8300000, guid: 0352feb22eb53f045b9ffd5afcee8f43, type: 3}
@@ -597,6 +647,20 @@ MonoBehaviour:
   bulletLeft: {fileID: 116828, guid: ca4e8c788fefd2d4c9346c9697aba2bb, type: 2}
   bulletRight: {fileID: 150318, guid: 5d8807c516c88a54992162de1b886bc7, type: 2}
   stats: {fileID: 1045211135}
+<<<<<<< HEAD
+=======
+  died: 0
+  dashParticles: {fileID: 19838584, guid: e41bd9e4631c9de45818e59948c2dfbe, type: 2}
+  doubleJumpParticles: {fileID: 19851534, guid: 7b05a4a5daf534343a1f94fb4de995ec,
+    type: 2}
+  shootParticles: {fileID: 19883812, guid: 46a7adaae360f90489ba13c6e7ec33ca, type: 2}
+  blockDestructionParticles: {fileID: 19865374, guid: b99d29c8cdaae9849819496a00ee48f0,
+    type: 2}
+  deathParticles: {fileID: 19834262, guid: dc058172a5373ad4e917b7a093865e9f, type: 2}
+  winCelebrationParticles: {fileID: 19851090, guid: e771d9b257797e44aa00d069ab478965,
+    type: 2}
+  coinParticles: {fileID: 19851534, guid: 50a189492a52774438266177c604ddb5, type: 2}
+>>>>>>> origin/master
   tile: {fileID: 484902, guid: 9b24c1febcfa3e140bb0f0ebc9eaeb46, type: 2}
   coinPrefab: {fileID: 420194, guid: 474a0699d603cf54f988dbb4c96eca63, type: 2}
   tiles:
@@ -676,6 +740,19 @@ MonoBehaviour:
   - double
   backgroundWidth: 25
   backgroundScrollSpeed: 4
+<<<<<<< HEAD
+=======
+  signs:
+  - Welcome to the center of a black hole! Move around with A and D.
+  - You can jump past spikes by pressing SPACE or W.
+  - 'Try pressing the left and right arrow keys. Your actions depend on the color
+    of the background. The action is shown below '
+  - If you hold down LEFT and RIGHT arrow keys, you will dash longer!
+  - Congratulations, you reached a checkpoint. If you die, you will appear here.
+  - You must double-jump to reach the ledge above.
+  - This ends the tutorial level! Good luck!
+  signTextBox: {fileID: 1413925997}
+>>>>>>> origin/master
   actionText: {fileID: 1149882773}
   coinText: {fileID: 41824412}
 --- !u!4 &1255372338
@@ -705,7 +782,10 @@ AudioSource:
   m_Pitch: 1
   Loop: 0
   Mute: 0
+<<<<<<< HEAD
   Spatialize: 0
+=======
+>>>>>>> origin/master
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -775,7 +855,10 @@ AudioSource:
   m_Pitch: 1
   Loop: 0
   Mute: 0
+<<<<<<< HEAD
   Spatialize: 0
+=======
+>>>>>>> origin/master
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -830,6 +913,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+<<<<<<< HEAD
 --- !u!95 &1255372341
 Animator:
   serializedVersion: 3
@@ -847,6 +931,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+=======
+>>>>>>> origin/master
 --- !u!1 &1398477091
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,7 +965,10 @@ AudioSource:
   m_Pitch: 1
   Loop: 1
   Mute: 0
+<<<<<<< HEAD
   Spatialize: 0
+=======
+>>>>>>> origin/master
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -957,6 +1046,87 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
+<<<<<<< HEAD
+=======
+--- !u!1 &1413925996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1413925997}
+  - 222: {fileID: 1413926000}
+  - 114: {fileID: 1413925999}
+  - 114: {fileID: 1413925998}
+  m_Layer: 5
+  m_Name: SignText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1413925997
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413925996}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 9}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 840687115}
+  m_RootOrder: 4
+  m_AnchorMin: {x: .5, y: 1}
+  m_AnchorMax: {x: .5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -200}
+  m_SizeDelta: {x: 600, y: 150}
+  m_Pivot: {x: .5, y: .5}
+--- !u!114 &1413925998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413925996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d76b31ae240a9d1498380b44f9d09067, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1413925999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413925996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 0fcb3e1a0f702fc4aa54761964bfff40, type: 3}
+    m_FontSize: 20
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 40
+    m_Alignment: 1
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 
+--- !u!222 &1413926000
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1413925996}
+>>>>>>> origin/master
 --- !u!1 &1639612239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,10 +1228,17 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 840687115}
   m_RootOrder: 2
+<<<<<<< HEAD
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
   m_AnchoredPosition: {x: -307.299988, y: 308.899994}
   m_SizeDelta: {x: 160, y: 30}
+=======
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 137, y: -63}
+  m_SizeDelta: {x: 250, y: 30}
+>>>>>>> origin/master
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1987701305
 MonoBehaviour:
@@ -1076,6 +1253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
+<<<<<<< HEAD
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1085,6 +1263,11 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
     m_FontSize: 15
+=======
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: ebfea174e3844ad44bdbb9fc75977963, type: 3}
+    m_FontSize: 25
+>>>>>>> origin/master
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
