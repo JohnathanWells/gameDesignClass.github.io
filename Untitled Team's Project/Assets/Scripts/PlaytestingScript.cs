@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-<<<<<<< HEAD
-=======
 using System.IO;
->>>>>>> origin/master
 using System.Collections;
 
 public class PlaytestingScript : MonoBehaviour {
@@ -18,13 +15,11 @@ public class PlaytestingScript : MonoBehaviour {
     public string fileLocation = "DeathLog";
 
     void Awake()
-<<<<<<< HEAD
-    {}
-=======
+
     {
         deathLog = System.IO.File.ReadAllText(fileLocation);
     }
->>>>>>> origin/master
+
 
 	// Use this for initialization
 	void Start () {
@@ -48,14 +43,11 @@ public class PlaytestingScript : MonoBehaviour {
         if (input > 60)
         {
             minutes = Mathf.RoundToInt(input / 60);
-<<<<<<< HEAD
             input %= input / 60;
         }
             seconds = Mathf.RoundToInt(input);
-=======
         }
             seconds = Mathf.RoundToInt(input % 60);
->>>>>>> origin/master
 
 
         if (seconds < 10 && minutes < 10)
@@ -81,10 +73,8 @@ public class PlaytestingScript : MonoBehaviour {
 	{
 		string levelName = Application.loadedLevelName;
 		deathLog += "Teleporter: " + levelName + " - " + outputTime + " [" + Mathf.RoundToInt(position.x) + ", " + Mathf.RoundToInt(position.y) + "]" + System.Environment.NewLine;
-<<<<<<< HEAD
 		System.IO.File.WriteAllText(fileLocation, deathLog);
-=======
         System.IO.File.WriteAllText(fileLocation, deathLog);
->>>>>>> origin/master
+
 	}
 }
