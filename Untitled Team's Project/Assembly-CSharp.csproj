@@ -45,7 +45,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\BlockData.cs" />
      <Compile Include="Assets\Scripts\CreateMaps.cs" />
      <Compile Include="Assets\Scripts\Logic.cs" />
      <Compile Include="Assets\Scripts\Music.cs" />
@@ -53,16 +52,8 @@
      <Compile Include="Assets\Scripts\backgroundScript.cs" />
      <Compile Include="Assets\Scripts\moveScript.cs" />
      <Compile Include="Assets\Scripts\powerWalls.cs" />
-     <Compile Include="Assets\astroidLight.cs" />
-     <Compile Include="Assets\astroidMove.cs" />
-     <Compile Include="Assets\bgMainScreen.cs" />
-     <Compile Include="Assets\buttonAnimation.cs" />
-     <Compile Include="Assets\changeToScene.cs" />
-     <Compile Include="Assets\dancerAnimations.cs" />
-     <Compile Include="Assets\easterEggButtonPlayerMenu.cs" />
-     <Compile Include="Assets\mainScreenCam.cs" />
-     <Compile Include="Assets\mainScreenSloth.cs" />
-     <Compile Include="Assets\manualTrail.cs" />
+     <Compile Include="Assets\Scripts\textFade.cs" />
+     <Compile Include="Assets\easterEggMoon.cs" />
      <Compile Include="Assets\menuScripts\astroidLight.cs" />
      <Compile Include="Assets\menuScripts\astroidMove.cs" />
      <Compile Include="Assets\menuScripts\bgMainScreen.cs" />
@@ -80,10 +71,8 @@
      <Compile Include="Assets\menuScripts\rotationStar.cs" />
      <Compile Include="Assets\menuScripts\starController.cs" />
      <Compile Include="Assets\menuScripts\textJuice.cs" />
-     <Compile Include="Assets\rotationStar.cs" />
-     <Compile Include="Assets\starController.cs" />
-     <Compile Include="Assets\textFade.cs" />
-     <Compile Include="Assets\textJuice.cs" />
+     <Compile Include="Assets\statusIndacator.cs" />
+     <Compile Include="Assets\waveSpawner.cs" />
      <None Include="Assets\PlaytestingFiles\DeathLog.txt" />
      <None Include="Assets\Levels\DeathLog.txt" />
  <Reference Include="UnityEngine.UI">
