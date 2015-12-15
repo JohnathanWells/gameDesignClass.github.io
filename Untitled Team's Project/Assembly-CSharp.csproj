@@ -63,23 +63,34 @@
      <Compile Include="Assets\mainScreenCam.cs" />
      <Compile Include="Assets\mainScreenSloth.cs" />
      <Compile Include="Assets\manualTrail.cs" />
+     <Compile Include="Assets\menuScripts\astroidLight.cs" />
+     <Compile Include="Assets\menuScripts\astroidMove.cs" />
+     <Compile Include="Assets\menuScripts\bgMainScreen.cs" />
+     <Compile Include="Assets\menuScripts\buttonAnimation.cs" />
+     <Compile Include="Assets\menuScripts\changeToScene.cs" />
+     <Compile Include="Assets\menuScripts\dancerAnimations.cs" />
+     <Compile Include="Assets\menuScripts\easterEggButtonPlayerMenu.cs" />
+     <Compile Include="Assets\menuScripts\evilSlothScript.cs" />
+     <Compile Include="Assets\menuScripts\mainScreenCam.cs" />
+     <Compile Include="Assets\menuScripts\mainScreenSloth.cs" />
+     <Compile Include="Assets\menuScripts\manualTrail.cs" />
+     <Compile Include="Assets\menuScripts\moveScriptBulletMainMenu.cs" />
+     <Compile Include="Assets\menuScripts\playerController.cs" />
+     <Compile Include="Assets\menuScripts\rotateDis.cs" />
+     <Compile Include="Assets\menuScripts\rotationStar.cs" />
+     <Compile Include="Assets\menuScripts\starController.cs" />
+     <Compile Include="Assets\menuScripts\textJuice.cs" />
      <Compile Include="Assets\rotationStar.cs" />
      <Compile Include="Assets\starController.cs" />
      <Compile Include="Assets\textFade.cs" />
      <Compile Include="Assets\textJuice.cs" />
      <None Include="Assets\PlaytestingFiles\DeathLog.txt" />
      <None Include="Assets\Levels\DeathLog.txt" />
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Analytics">
- <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Cecil">
  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/Mono.Cecil.dll</HintPath>
