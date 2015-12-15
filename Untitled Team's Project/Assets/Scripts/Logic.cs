@@ -198,7 +198,7 @@ public class Logic : MonoBehaviour {
         }*/
 
         /*if (Input.GetMouseButtonDown(2))
-            Debug.Log("Pressed middle click.");*/
+            Debug.Log("Pressed middle click.");
 
 
 		if(!died && !won)
