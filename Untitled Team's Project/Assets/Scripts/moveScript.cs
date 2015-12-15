@@ -27,14 +27,11 @@ public class moveScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (GameObject.Find("Logic").GetComponent<Logic>().destructableCollision(new Rect(transform.position.x / 4, transform.position.y / 4, 0, 0), .1f))
-        {
-            Debug.Log("q");
+        if (GameObject.Find("Logic").GetComponent<Logic>().destructableCollision(new Rect(transform.position.x / 4, transform.position.y / 4, 0, 0), .1f)) {
             GameObject.Find("Logic").GetComponent<Logic>().setTile((int)Mathf.Round(transform.position.x / 4), (int)Mathf.Round(transform.position.y / 4), "");
             Destroy(gameObject);
         }
-        if (GameObject.Find("Logic").GetComponent<Logic>().collision(new Rect(transform.position.x / 4 - 3 / 8, transform.position.y / 4 - 3 / 8, 3 / 8, 3 / 8), .1f))
-        {
+        if (GameObject.Find("Logic").GetComponent<Logic>().collision(new Rect(transform.position.x / 4 - 3 / 8, transform.position.y / 4 - 3 / 8, 3 / 8, 3 / 8), .1f)) {
             //Destroy(bulletLeft);
             //Destroy(bulletRight);
             Destroy(gameObject);
