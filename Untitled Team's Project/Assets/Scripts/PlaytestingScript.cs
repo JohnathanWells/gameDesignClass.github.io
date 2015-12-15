@@ -40,9 +40,9 @@ public class PlaytestingScript : MonoBehaviour {
 
         if (input > 60)
         {
-            minutes = Mathf.RoundToInt(input / 60);
+            minutes = Mathf.FloorToInt(input / 60);
         }
-            seconds = Mathf.RoundToInt(input % 60);
+		seconds = Mathf.FloorToInt(input % 60);
 
 
         if (seconds < 10 && minutes < 10)

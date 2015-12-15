@@ -1,23 +1,38 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.IO;
 
 public class Logic : MonoBehaviour {
-    public bool INSERTTHEJUICE = false;
-
+	[Header("STUFF FOR EACH LEVEL")]
 	public int levelNum = 1;
+	public Texture2D level;
+	public Transform signTextBox;
+	public Text actionText;
+	public Text coinText;
+	public Transform player;
+	public Camera mainCamera;
+	public bool renderAllTiles = false;
+	public string[] signs;
+	public string slothFile = "temp.sloth";
+	public bool loadFromSloth = false;
+	
+	[Header("THIS ALL SHOULD BE IN THE PREFAB ALREADY")]
 
 	public AudioClip[] sounds;
 
     public GameObject bulletLeft;
     public GameObject bulletRight;
-    public PlaytestingScript stats;
+	public PlaytestingScript stats;
+
     //float bulletSpeed;
     float coinCount = 0;
     bool textColor = false;
 
 	public bool died = false;
 	private bool won = false;
+
+	public bool INSERTTHEJUICE = true;
 
     public ParticleSystem dashParticles;
     public ParticleSystem doubleJumpParticles;
@@ -31,22 +46,16 @@ public class Logic : MonoBehaviour {
 	public Transform coinPrefab;
 	public Sprite[] tiles;
 
-	public bool renderAllTiles = false;
-
-	public Texture2D level;
-
 	public bool useScene = false;
 	public string[,] scene;
 	Vector2 spawnPoint;
 
-	public Camera mainCamera;
 	Vector2 cam;
 	Vector2 smoothCam;
 	Vector2 smoothCam2;
 	int screenshakeWOOOOAH;
 	Rect camBounds;
 
-	public Transform player;
 	Vector2 playerPos;
 	Vector2 playerVelocity;
 	bool playerLastDirIsLeft = false;
@@ -54,7 +63,7 @@ public class Logic : MonoBehaviour {
 	float playerLastFallSpeed = 0;
 	int playerJumpNum = 0;
 	int playerDashTimer = 0;
-
+	
 	public Transform backgroundSlab;
 	public string[] backgroundTypes;
 	public int backgroundWidth = 25;
@@ -64,12 +73,6 @@ public class Logic : MonoBehaviour {
 
 	bool alreadyDashed = true;
 
-	public string[] signs;
-	public Transform signTextBox;
-
-	public Text actionText;
-    public Text coinText;
-
 	bool deletingTiles = false;
 
 	string action = "double";
@@ -77,7 +80,12 @@ public class Logic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		stats = GameObject.Find ("Stats").GetComponent<PlaytestingScript> ();
-		if(!useScene) loadLevel(level);//Load the level image to a multidimensional array
+		if (!useScene) {
+			if (loadFromSloth)
+				loadLevel(slothFile);
+			else if(!useScene) 
+				loadLevel(level); //Load the level image to a multidimensional array
+		}
 		
 		playerPos = new Vector2 (spawnPoint.x, spawnPoint.y);
 		updateSpritePosition ();
@@ -115,6 +123,7 @@ public class Logic : MonoBehaviour {
 		}
 	}
 	void FixedUpdate () {
+
 		cam.y += (playerPos.y-cam.y+4)/10;
 		cam.x += (playerPos.x+(playerLastDirIsLeft?-1:1)-cam.x)/10;
 		
@@ -154,6 +163,8 @@ public class Logic : MonoBehaviour {
 	}
 	
 	void Update() {
+		if (Input.GetKey(KeyCode.Escape)) Application.Quit();
+	
 		Vector2 mP = new Vector2((int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).x)/4, (int)(mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)).y)/4+1);
 
 		/*
@@ -177,50 +188,52 @@ public class Logic : MonoBehaviour {
 		//Some key stuff happens here, because Unity
 
 		//Where jump and double jump is handled
-		if (playerFalling) {
-			if (Input.GetButtonDown ("Jump") && action == "double" && playerJumpNum <= 1) {
-				playSound (0);
-				playerJumpNum++;
-				playerVelocity.y = .5f;
-                EmitParticles(doubleJumpParticles, new Vector2(player.position.x + 2f, player.position.y - 0.2f), new Vector3(-13, 0, 0), null);
+		if (!died && !won) {
+			if (playerFalling) {
+				if (Input.GetButtonDown ("Jump") && action == "double" && playerJumpNum <= 1) {
+					playSound (0);
+					playerJumpNum++;
+					playerVelocity.y = .5f;
+					EmitParticles (doubleJumpParticles, new Vector2 (player.position.x + 2f, player.position.y - 0.2f), new Vector3 (-13, 0, 0), null);
+				}
+			} else {
+				if (Input.GetButtonDown ("Jump") && playerJumpNum < 1) {
+					playSound (5);
+					playerJumpNum++;
+					playerVelocity.y = .5f;
+				}
 			}
-		} else {
-			if (Input.GetButtonDown ("Jump") && playerJumpNum < 1) {
-				playSound (5);
-				playerJumpNum++;
-				playerVelocity.y = .5f;
-			}
-		}
 
-		//Where dashing is handled
-		if (action == "dash") {
-			if(!alreadyDashed) {
-				if (Input.GetButtonDown ("DashLeft")) {
-					playSound (6);
-					alreadyDashed = true;
-					playerDashTimer = -20;
-					EmitParticles(dashParticles, new Vector3(player.position.x + 4f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, 90, 0), player.transform);
-				}
-				if (Input.GetButtonDown ("DashRight")) {
-					playSound (6);
-					alreadyDashed = true;
-					playerDashTimer = 20;
-					EmitParticles(dashParticles, new Vector3(player.position.x + .5f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, -90, 0), player.transform);
+			//Where dashing is handled
+			if (action == "dash") {
+				if (!alreadyDashed) {
+					if (Input.GetButtonDown ("DashLeft")) {
+						playSound (6);
+						alreadyDashed = true;
+						playerDashTimer = -20;
+						EmitParticles (dashParticles, new Vector3 (player.position.x + 4f, player.position.y - 1.5f, player.position.z - 10), new Vector3 (90, 90, 0), player.transform);
+					}
+					if (Input.GetButtonDown ("DashRight")) {
+						playSound (6);
+						alreadyDashed = true;
+						playerDashTimer = 20;
+						EmitParticles (dashParticles, new Vector3 (player.position.x + .5f, player.position.y - 1.5f, player.position.z - 10), new Vector3 (90, -90, 0), player.transform);
+					}
 				}
 			}
-		}
 		
-		//Where shooting is handled
-		if (action == "shoot" && (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))) {
-			playSound (3);
-			Instantiate(bulletLeft, new Vector2(player.position.x, player.position.y - .5f), Quaternion.identity);
-			EmitParticles(shootParticles, new Vector3(player.position.x + 0.5f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, -90, 0), player.transform);
-        }
-		if (action == "shoot" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.RightArrow))) {
-			playSound (3);
-			Instantiate(bulletRight, new Vector2(player.position.x + 4, player.position.y - .5f), new Quaternion(0, 180, 0, 0));
-			EmitParticles(shootParticles, new Vector3(player.position.x + 4f, player.position.y - 1.5f, player.position.z - 10), new Vector3(90, 90, 0), player.transform);
-        }
+			//Where shooting is handled
+			if (action == "shoot" && (Input.GetKeyDown (KeyCode.Q) || Input.GetKeyDown (KeyCode.LeftArrow))) {
+				playSound (3);
+				Instantiate (bulletLeft, new Vector2 (player.position.x, player.position.y - .5f), Quaternion.identity);
+				EmitParticles (shootParticles, new Vector3 (player.position.x + 0.5f, player.position.y - 1.5f, player.position.z - 10), new Vector3 (90, -90, 0), player.transform);
+			}
+			if (action == "shoot" && (Input.GetKeyDown (KeyCode.E) || Input.GetKeyDown (KeyCode.RightArrow))) {
+				playSound (3);
+				Instantiate (bulletRight, new Vector2 (player.position.x + 4, player.position.y - .5f), new Quaternion (0, 180, 0, 0));
+				EmitParticles (shootParticles, new Vector3 (player.position.x + 4f, player.position.y - 1.5f, player.position.z - 10), new Vector3 (90, 90, 0), player.transform);
+			}
+		}
 	}
 	void playSound(int num) {
 		gameObject.GetComponent<AudioSource>().clip = sounds[num];
@@ -632,7 +645,84 @@ public class Logic : MonoBehaviour {
 			}
 		}
 	}
-
+	void loadLevel(string slothFile) {
+		// load the file
+		StreamReader readFile = new StreamReader (slothFile);
+		
+		// basic declarations
+		string text = "", lineText = "";
+		int i = 0, x = 0, y = 0;
+		int width, height;
+		
+		// go through the file until scene sceneStart is found
+		while (!text.Contains("sceneStart:") && !readFile.EndOfStream) {
+			text = text + (char)readFile.Read ();
+			i++;
+		}
+		if (readFile.EndOfStream) { // break if its at the end of the stream
+			return; // should be error eventually
+		}
+		
+		//find width
+		text = ""; // reset
+		i = 0;
+		while (!text.Contains(",") && !readFile.EndOfStream) { // finds the ","
+			text = text + (char)readFile.Read ();
+			i++;
+		}
+		if (readFile.EndOfStream) { // break if its at the end of the stream
+			return; // should be error eventually
+		}
+		text = text.Substring (0, text.Length - 1); // cut out comma
+		if (!int.TryParse (text, out width)) {
+			return; // should be error eventually
+		}
+		
+		//find Height
+		text = ""; // reset
+		while (!text.Contains("\n") && !readFile.EndOfStream) { // finds the next line char
+			text = text + (char)readFile.Read ();
+			i++;
+		}
+		if (readFile.EndOfStream) { // break if its at the end of the stream
+			return; // should be error eventually
+		}
+		text = text.Substring (0, text.Length - 1); // cut out next-line char
+		if (!int.TryParse (text, out height)) {
+			return; // should be error eventually
+		}
+		
+		// create map
+		text = ""; // reset text string
+		scene = new string[width, height];
+		i = 0;
+		lineText = readFile.ReadLine (); // Get the first line
+		while (!lineText.Contains("endScene:") && y < height) {  // loop trhough unless endScene is read,
+			//loop though the string poping off each character
+			while (lineText.Length > 0 && x < width) {
+				text = text + lineText.Substring (0, 1); // push the char
+				lineText = lineText.Substring (1, lineText.Length - 1);
+				if (text.Contains (".")) {
+					text = text.Replace (".", "");
+					scene [x, y] = text;
+					text = "";
+					
+					// check for spawn point
+					if (scene [x, y] == "p") {
+						spawnPoint = new Vector2 (x, y);
+						scene [x, y] = ""; // remove from editor
+					}
+					
+					x++;
+				}
+				
+			}
+			x = 0;
+			y++;
+			lineText = readFile.ReadLine (); // get the next line
+		}
+	}
+		
 	string getTile(int x, int y) {
 		if(x<=0 || x>=scene.GetLength(0) || y<=0 || y>=scene.GetLength(1)) return "1"; //Render blocks outside of world range
 		else return scene[x, y];
@@ -640,12 +730,12 @@ public class Logic : MonoBehaviour {
 	
 	public void setTile(int x, int y, string type) {
 		if(x<=0 || x>=scene.GetLength(0) || y<=0 || y>=scene.GetLength(1)) return; //Render blocks outside of world range
-
+		
 		if (getTile (x, y) == type)
 			return;
-
+		
 		scene[x, y] = type;
-
+		
 		if (x >= camBounds.x && x <= camBounds.x+camBounds.width && y >= camBounds.y && y <= camBounds.y+camBounds.height) {
 			drawTile (x, y);
 		}

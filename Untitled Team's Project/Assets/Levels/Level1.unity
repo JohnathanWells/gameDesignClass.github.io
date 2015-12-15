@@ -570,8 +570,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16cf0b2dd8ba1454c91bbc58daff6aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  INSERTTHEJUICE: 1
   levelNum: 1
+  level: {fileID: 2800000, guid: f758b730448f84640adbe697e7a2a429, type: 3}
+  signTextBox: {fileID: 1413925997}
+  actionText: {fileID: 1149882773}
+  coinText: {fileID: 41824412}
+  player: {fileID: 544416045}
+  mainCamera: {fileID: 635464267}
+  renderAllTiles: 0
+  signs:
+  - Welcome to the center of a black hole! Move around with A and D.
+  - You can jump past spikes by pressing SPACE or W.
+  - 'Press the left and right arrow keys. Your actions depend on the color of the
+    background. The action is shown below. '
+  - If you hold down LEFT and RIGHT arrow keys, you will dash longer!
+  - Congratulations, you reached a checkpoint. If you die, you will appear here.
+  - You must double-jump to reach the ledge above.
+  - This ends the tutorial level! Good luck!
+  slothFile: temp.sloth
+  loadFromSloth: 0
   sounds:
   - {fileID: 8300000, guid: 0352feb22eb53f045b9ffd5afcee8f43, type: 3}
   - {fileID: 8300000, guid: 138c7a06c1f7ab040ba5014b97381126, type: 3}
@@ -584,6 +601,7 @@ MonoBehaviour:
   bulletRight: {fileID: 150318, guid: 5d8807c516c88a54992162de1b886bc7, type: 2}
   stats: {fileID: 1045211135}
   died: 0
+  INSERTTHEJUICE: 1
   dashParticles: {fileID: 19838584, guid: e41bd9e4631c9de45818e59948c2dfbe, type: 2}
   doubleJumpParticles: {fileID: 19851534, guid: 7b05a4a5daf534343a1f94fb4de995ec,
     type: 2}
@@ -661,11 +679,7 @@ MonoBehaviour:
   - {fileID: 21300122, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
   - {fileID: 21300124, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
   - {fileID: 21300126, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
-  renderAllTiles: 0
-  level: {fileID: 2800000, guid: f758b730448f84640adbe697e7a2a429, type: 3}
   useScene: 0
-  mainCamera: {fileID: 635464267}
-  player: {fileID: 544416045}
   backgroundSlab: {fileID: 422992, guid: 4de4c003d60fd0b4ab677bb98b7241c7, type: 2}
   backgroundTypes:
   - shoot
@@ -673,18 +687,6 @@ MonoBehaviour:
   - double
   backgroundWidth: 25
   backgroundScrollSpeed: 4
-  signs:
-  - Welcome to the center of a black hole! Move around with A and D.
-  - You can jump past spikes by pressing SPACE or W.
-  - 'Try pressing the left and right arrow keys. Your actions depend on the color
-    of the background. The action is shown below '
-  - If you hold down LEFT and RIGHT arrow keys, you will dash longer!
-  - Congratulations, you reached a checkpoint. If you die, you will appear here.
-  - You must double-jump to reach the ledge above.
-  - This ends the tutorial level! Good luck!
-  signTextBox: {fileID: 1413925997}
-  actionText: {fileID: 1149882773}
-  coinText: {fileID: 41824412}
 --- !u!4 &1255372338
 Transform:
   m_ObjectHideFlags: 0
