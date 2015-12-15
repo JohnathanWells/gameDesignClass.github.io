@@ -650,8 +650,12 @@ MonoBehaviour:
   - {fileID: 21300122, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
   - {fileID: 21300124, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
   - {fileID: 21300126, guid: 71c213495e3001b469d9bdf3d8c8be89, type: 3}
+<<<<<<< HEAD:Untitled Team's Project/Assets/Game.unity
+  level: {fileID: 2800000, guid: 14b91418f2eac614cba0d8fabe8fe36b, type: 3}
+=======
   renderAllTiles: 0
   level: {fileID: 2800000, guid: b9879ec151463a64ba979d5a7894a15c, type: 3}
+>>>>>>> origin/master:Untitled Team's Project/Assets/Levels/Level3.unity
   useScene: 0
   mainCamera: {fileID: 635464267}
   player: {fileID: 544416045}
