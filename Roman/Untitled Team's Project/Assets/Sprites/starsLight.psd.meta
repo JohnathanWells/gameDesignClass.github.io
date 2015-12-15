@@ -1,0 +1,353 @@
+fileFormatVersion: 2
+guid: d698197975121c74c9646b2fba888a57
+timeCreated: 1449636750
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: starsLight_0
+    21300002: starsLight_1
+    21300004: starsLight_2
+    21300006: starsLight_3
+    21300008: starsLight_4
+    21300010: starsLight_5
+    21300012: starsLight_6
+    21300014: starsLight_7
+    21300016: starsLight_8
+    21300018: starsLight_9
+    21300020: starsLight_10
+    21300022: starsLight_11
+    21300024: starsLight_12
+    21300026: starsLight_13
+    21300028: starsLight_14
+    21300030: starsLight_15
+    21300032: starsLight_16
+    21300034: starsLight_17
+    21300036: starsLight_18
+    21300038: starsLight_19
+    21300040: starsLight_20
+    21300042: starsLight_21
+    21300044: starsLight_22
+    21300046: starsLight_23
+    21300048: starsLight_24
+    21300050: starsLight_25
+    21300052: starsLight_26
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: 0
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 1
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: starsLight_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 153
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_1
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 151
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_2
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 153
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_3
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 153
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_4
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 152
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_5
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 112
+        width: 15
+        height: 14
+      alignment: 9
+      pivot: {x: .497935981, y: .516427159}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_6
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 112
+        width: 15
+        height: 14
+      alignment: 9
+      pivot: {x: .502930224, y: .528256536}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_7
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 112
+        width: 13
+        height: 14
+      alignment: 9
+      pivot: {x: .428996146, y: .515698016}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_8
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 134
+        width: 5
+        height: 5
+      alignment: 9
+      pivot: {x: .515781403, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_9
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 134
+        width: 5
+        height: 5
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_10
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 133
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_11
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 132
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 84
+        width: 21
+        height: 23
+      alignment: 9
+      pivot: {x: .457879335, y: .475963771}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_13
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 118
+        width: 9
+        height: 6
+      alignment: 9
+      pivot: {x: .512284994, y: .463144928}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_14
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 118
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_15
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 84
+        width: 4
+        height: 4
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_16
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 90
+        width: 3
+        height: 3
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_17
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 93
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_18
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 100
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_19
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 105
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_20
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 106
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_21
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 102
+        width: 4
+        height: 3
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_22
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 75
+        width: 19
+        height: 20
+      alignment: 9
+      pivot: {x: .567629218, y: .551661193}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_23
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 85
+        width: 7
+        height: 5
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_24
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 87
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_25
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 133
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: starsLight_26
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 43
+        width: 36
+        height: 19
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
